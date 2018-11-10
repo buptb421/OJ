@@ -11,7 +11,7 @@ int main(){
     int k;
     int start = 0, end = 0;
     int halfj = j / 2;
-    for(k = 1; k <= halfj && start != end; k = k + 1)
+    for(k = 1; k <= halfj && start == end; k = k + 1)
     {
         start = n / i;
         end = n - 10 * nd10;
@@ -21,6 +21,8 @@ int main(){
         }
 	else
 	{
+	    start = n / i;
+	    end = n - 10 * nd10;
 	    i = i / 10;
 	    n = nd10 - start * i;
 	    nd10 = n / 10;
