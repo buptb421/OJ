@@ -1,8 +1,8 @@
 #include<stdio.h>
 
-void recurePrintFactor(int n)
+void recurePrintFactor(int n, int sf)//suspected factor
 {
-    for(int i = 2; i <= n; i = i + 1)
+    for(int i = sf; i <= n; i = i + 1 + (i != 2))
     {	
 	if(n % i == 0)
 	{
@@ -13,7 +13,7 @@ void recurePrintFactor(int n)
 	    else
 	    {
 		printf("*");
-		return recurePrintFactor(n);
+		return recurePrintFactor(n, i);
 	    }
 	}
     }
@@ -26,7 +26,7 @@ void printWhole(int n)
     if(n == 1)
 	printf("1\n");
     else
-	recurePrintFactor(n);
+	recurePrintFactor(n, 2);
 }
 
 int main()
