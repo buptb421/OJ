@@ -174,6 +174,7 @@ void constructclean(FILE *pfile, namel *Tar)
 {
     fprintf(pfile, ".PHONY : clean\n\nclean :\n\trm ");
     fputList(pfile, Tar);
+    fprintf(pfile, "\n");
 }
 
 int main(int argc, char **argv)
