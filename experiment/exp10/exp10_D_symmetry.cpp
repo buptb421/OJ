@@ -43,7 +43,7 @@ void tocode(int o[], int e[], int n)
     }
 }
 
-void carryforward(int a[], int i, int j)// Carries the i th elem to j th elem, while put back all elem between them 1 step.
+void carryforward(int a[], int i, int j)
 {
     int temp = a[i];
     for(int index  = i; index < j; index++)
@@ -54,9 +54,9 @@ void carryforward(int a[], int i, int j)// Carries the i th elem to j th elem, w
 void decode(int e[], int o[], int n)
 {
     for(int i = 0; i < n; i++)
-	o[i] = n - i - 1;
-    // Init the origin to {n-1, .. , 0}, which have code of {0, ... , 0}.
+	o[i] = i;
+    // diff
     for(int i = n - 1; i >= 0; i--)
-	if(e[i] != 0)
-	    carryforward(o, i - e[i], i);
+      if(e[i] != o[i]) //diff
+	carryforward(o, e[i], i); //diff
 }
