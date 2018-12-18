@@ -1,3 +1,4 @@
+#define nullptr NULL
 #include<stdio.h>
 #include<stdlib.h>
 
