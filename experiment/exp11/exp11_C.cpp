@@ -82,7 +82,7 @@ void destroyD2(int **p, int m)
 {
     int **temp = p;
     for(int i = 0; i < m; i++, temp++)
-	free(*temp);
+	destroyD1(*temp);
     free(p);
 }
 //--------------------------------------------------------/|
