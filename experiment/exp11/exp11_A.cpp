@@ -1,29 +1,49 @@
 #include<stdio.h>
 
+void getString(char *p)
+{
+    scanf("%c", p);
+    while(*p != '\n')
+    {
+	p++;
+	scanf("%c", p);
+    }
+    *p = '\0';
+}
+
+void outputString(char *str);
 int isRightLocation(char *str1, char *str2);
 char *locatesubstr(char *str1,char *str2);
 
 int main()
 {
-    char *str1, *str2;
-    gets(str1);
-    gets(str2);
+    char str1[501], str2[501];
+    getString(str1);
+    getString(str2);
+    
+//    outputString(str1);
+//    outputString(str2);
     
     char *Loc = locatesubstr(str1, str2);
     
     if(Loc == NULL)
-	printf("NULL!\n");
+		printf("NULL!\n");
     else
-    {
-	while(*Loc != '\0')
-	{
-	    printf("%c", *Loc);
-	    Loc++;
-	}
-	printf("\n");
-    }
+    	outputString(Loc);
 
     return 0;    
+}
+
+void outputString(char *str)
+{
+	int safe = 0;
+	while(*str != '\0' && safe < 500)
+	{
+		printf("%c", *str);
+		str++;
+		safe++;
+	}
+	printf("\n");
 }
 
 int isRightLocation(char *str1,char *str2)
