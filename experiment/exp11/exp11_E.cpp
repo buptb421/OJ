@@ -1,4 +1,3 @@
-#define NULL nullptr
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -129,7 +128,7 @@ int **constructD2(int m, int n)
 void relateD2Index(int **index, int **p, int m)
 {
     for(int i = 0; i < m; i++, index++, p++)
-	*index = *p;
+	    *index = *p;
 }
 
 int **constructD2Index(int m, int **p)
@@ -173,58 +172,49 @@ void destroyD2(int **p, int m)
 
 // Position change and fill in----------------------------\|
 
-void next(int ***index, int **p, int *i, in *j, int n);
+void next(int ***index, int *i, int *j, int n)
 {
-    if(*i == 0)
+    if((*i + *j) % 2 == 1)
     {
-
-    }
-    else if(*i == n - 1)
-    {
-
-    }
-    else if(*j == 0)
-    {
-
-    }
-    else if(*j == n - 1)
-    {
-
+	if(*j == n - 1)
+	{
+	    *index = *index + 1;
+	    *i = *i + 1;
+	    *j = *j - 1;
+	}
+	else if(*i != 0)
+	{
+	    *index = *index - 1;
+	    *i = *i - 1;
+	}
+	
+	**index = **index + 1;
+	*j = *j + 1;
     }
     else
     {
-	if((*i + *j) % 2 == 1)
+	if(*i != n - 1)
 	{
-	    *i = *i - 1;
-	    *j = *j + 1;
-	    *index = *index - 1;
-	    **index = **index + 1;
+	    *index = *index + 1;
+	    *i = *i + 1;
+	    if(*j == 1)
+	    {
+		*j = 0;
+	    }
+	    if(*j != 0)
+	    {
+		**index = **index + 1;
+		*j = *j - 1;
+	    }
 	}
 	else
 	{
-	    *i = *i + 1;
-	    *j = *j - 1;
-	    *index = *index + 1;
-	    **index = **index - 1;
+	    **index = **index + 1;
+	    *j = *j + 1;
 	}
     }
 }
-/*
-void next(int ***index, int *i, int *j, int n)
-{
-    if(*j == n - 1)
-    {
-	*i = *i + 1;
-	*j = 0;
-	*index = *index + 1;
-    }
-    else
-    {
-	*j = *j + 1;
-	**index = **index + 1;
-    }
-}
-*/
+
 void fillin(int **index, int n)
 {
     int i = 0, j = 0;
