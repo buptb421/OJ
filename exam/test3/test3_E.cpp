@@ -24,7 +24,7 @@ int main()
     
     return 0;
 }
-
+3
 int septest(long long testlen, int n)
 {
     int sum = 0;
@@ -37,7 +37,7 @@ void binaryS(long long *i, long long *j, int n, int m)
 {
     while((*j - *i) > 8)
     {
-	if(septest((*i + *j) / 2, n) > m)
+	if(septest((*i + *j) / 2, n) >= m)
 	    *i = (*i + *j) / 2;
 	else
 	    *j = (*i + *j) / 2;
