@@ -1,20 +1,28 @@
 #include<stdio.h>
 
 void getString(char *p);
+
 void outputString(char *p);
 
 int main()
 {
     char c[10001];
-    c[10000] = '\0';
-    char *start[1000];
-    start[0] = c;
+    char *start[1001];
     
     getString(c);
     
-    int i, count = 0;
+    int count;
+    
+    if(*c == ' ')
+	count = -1;
+    else
+    {
+	count = 0;
+	start[0] = c;
+    }
+    
     char *p = c;
-    for(i = 0; i <= 10000 && *p != '\0'; i++)
+    for(int i = 0; i <= 10000 && *p != '\0'; i++)
     {
 	if(*p == ' ')
 	{
@@ -51,12 +59,12 @@ void getString(char *p)
 
 void outputString(char *p)
 {
-    int safe = 0;
-    while(*p != '\0' && safe < 10000)
+    int buffer = 0;
+    while(*p != '\0' && buffer <= 10000)
     {
 	printf("%c", *p);
 	p++;
-	safe++;
+	buffer++;
     }
     printf("\n");
 }

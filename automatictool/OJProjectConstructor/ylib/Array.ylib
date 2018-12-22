@@ -1,0 +1,70 @@
+//-*-C-*-
+
+//----------------------------------------------------------------------------\|
+/*
+  Name: D1_list_dynamic_all.
+  Abbreviation: D1All.
+  Declaration: 
+  Dependency: 0.
+  Type: 0.
+*/
+//----------------------------------------------------------------------------/|
+
+//----------------------------------------------------------------------------\|
+/*
+  Name: D1_list_dynamic_construct&recycle.
+  Abbreviation: D1Constructor.
+  Declaration:  
+  Dependency: 0.
+  Type: 2,
+    DATATYPE,
+    INTLONG.
+*/
+DATATYPE* D1Constructor(INTLONG n)
+{
+    DATATYPE *p;
+    p = new DATATYPE[n];
+    if(p == nullptr)
+    {
+	
+    }
+    else
+    {
+	
+    }
+}
+//----------------------------------------------------------------------------/|
+
+//----------------------------------------------------------------------------\|
+/*
+  Name: D1_list_dynamic_traverse_num.
+  Abbr: D1DynTraverserNum.
+  Dependency: 0.
+  Type: 1,
+    DATATYPE.
+*/
+//----------------------------------------------------------------------------/|
+
+//----------------------------------------------------------------------------\|
+/*
+  Name: D2_list_dynamic_construct&recycle.
+  Abbr: D2Constructor.
+  Dependency: 1,
+    D1_list_dynnamic_construct&recycle.
+  Type: 1,
+    DATATYPE.
+*/
+//----------------------------------------------------------------------------/|
+
+//----------------------------------------------------------------------------\|
+/*
+  Name: D3_list_dynamic_construct&recycle.
+  Abbr: D3Constructor.
+  Dependency: 2,
+    D1_list_dynamic_construct&recycle,
+    D2_list_dynamic_construct&recycle.
+  Type: 1,
+    DATATYPE.
+*/
+//----------------------------------------------------------------------------/|
+//EOF
