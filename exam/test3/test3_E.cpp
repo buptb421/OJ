@@ -3,35 +3,28 @@
 long long string[10000];
 
 int septest(long long testlen, int n);
-long long findMaxSep(long long len, int n, int m);
-long long improve(long long len, int add);
+void binaryS(long long *i, long long *j, int n, int m);
 
 int main()
 {
     int n, m;
     scanf("%d%d", &n, &m);
 
-    long long max = 100;
     for(int i = 0; i < n; i++)
     {
 	scanf("%lld", &string[i]);
     }
 
-    long long estimate = 0;
-    for(int i = 0; i < n; i++)
-	estimate += string[i] / m;
-
-    if(septest(estimate, n) > m)
-    {
-
-    }
-    else if(septest)
-    
-    printf("%lld\n", findMaxSep(estimate, n, m));
+    long long sta = 1, end = 2000000;
+    binaryS(&sta, &end, n, m);
+    int nSeg;
+    for(nSeg = 0; end > sta && nSeg < m; end--)
+      nSeg = septest(end, n);
+    printf("%lld\n", end);
     
     return 0;
 }
-
+3
 int septest(long long testlen, int n)
 {
     int sum = 0;
@@ -40,7 +33,13 @@ int septest(long long testlen, int n)
     return sum;
 }
 
-int binaryS(long long i, long long j)
+void binaryS(long long *i, long long *j, int n, int m)
 {
-    while(j - i > 100 && ((i + j) / 2))
+    while((*j - *i) > 8)
+    {
+	if(septest((*i + *j) / 2, n) >= m)
+	    *i = (*i + *j) / 2;
+	else
+	    *j = (*i + *j) / 2;
+    }
 }
