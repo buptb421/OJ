@@ -2,6 +2,8 @@
 #define _STRINGOPERATION_CPP
 
 #include<stdio.h>
+#include"ConstData.hpp"
+#include"StringOperation.hpp"
 
 void addStringPiece(const char *r, char *w)
 {

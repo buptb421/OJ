@@ -15,14 +15,6 @@ void displayFile(FILE *pFile);
 char *isLineScope(char *s);
 char *isLineProperty(char *s);
 
-
-
-
-Scope *freadScope()
-{
-    int find
-}
-
 void displayFile(FILE *pFile)
 {
     Line *l;
@@ -53,11 +45,6 @@ void fsepScope(FILE *pFile, Scope *sco)
     while()
 }
 */
-char *isLineScope(char *s)
-{
-    char scoS[] = "//-----";
-    return locateSubStr(s, scoS);
-}
 
 char *isLinePropertyStart(char *s)
 {

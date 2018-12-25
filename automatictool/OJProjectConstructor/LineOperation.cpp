@@ -1,6 +1,12 @@
 #ifndef _LINEOPERATION_CPP
 #define _LINEOPERATION_CPP
 
+#include<stdio.h>
+#include<new>
+#include"ConstData.hpp"
+#include"StringOperation.cpp"
+#include"LineOperation.hpp"
+
 Line *constructLine(int lenLine)
 {
     Line *p = new Line;
@@ -53,7 +59,6 @@ void destroyLine(Line *p)
     }
 }
 
-
 Line *storeLine(int lenLine, char *s)
 {
     Line *p = constructLine(lenLine);
@@ -85,6 +90,57 @@ void displayLine(Line *l)
     printf("[%-3d]", l -> nChar);
     outputString(l -> Str);
     printf("\n");
+}
+
+int isLineScope(Line *l)
+{
+    char scoS[] = "//-----";
+    if(locateSubStr(l -> Str, scoS) == l -> Str)
+	return 1;
+    else
+	return 0;
+}
+
+int freadScope_Line(FILE *pFile, Line **l)
+{
+    int countl, findScope = 0;
+    Line *p = freadLine_Line(pFile);
+    findScope = isLineScope(p)
+    while(p -> nChar != 0 && !feof(pFile) && !findScope)
+    {
+	destroyLine(p);
+	p = freadLine_Line(pFile);
+	findScope = isLineScope(p);
+    }
+    destroyLine(p);
+    if(!findScope)
+    {
+	printf("\n\nNo scope in file.\n\n\n");
+	return 0;
+    }
+    else
+    {
+	p = freadLine_Line(pFile);
+	for(countl = 0; countl < MAX_LINE_SCOPE && findScope && !feof(pFile); countl++)
+	{
+	    *l = p;
+	    l++;
+	    p = freadLine_Line(pFile);
+	    if(isLineScope(p))
+		findScope = 0;
+	}
+	if(findScope)
+	{
+	    printf("\n\nError scope.\n\n\n");
+	    return countl;
+	}
+	else
+	{
+	    *l = nullptr;
+	    destroyLine(p);
+	    return countl - 1;
+	}
+    }
 }
 
 #endif

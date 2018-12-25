@@ -1,7 +1,0 @@
-#ifndef _STRINGOPERATION_HPP
-#define _STRINGOPERATION_HPP
-
- 
-
-
-#endif
