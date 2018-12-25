@@ -1,0 +1,52 @@
+#include<stdio.h>
+
+struct s
+{
+	char name[100];
+	char num[100];
+	int score[100];
+	float average;
+	int total;
+};
+
+int main()
+{
+	int i;
+	char *j, *k;
+	struct s student;
+	gets(student.name);
+	gets(student.num);
+	for(i = 0;i<5; i++)
+	{
+		scanf("%d", &student.score[i]);
+	}
+	student.total = 0;
+	j = student.name;
+	k = student.num;
+	for(i = 0;i<5; i++)
+	{
+		student.total = student.total + student.score[i];
+	}
+	student.average = student.total/5;
+	printf("Name:");
+	for(;*j!='0'; *j++)
+	{
+		printf("%c", *j);
+	}
+	printf("\n");
+	printf("ID:");
+	for(;*k!='0';*k++)
+	{
+		printf("%c", *k);
+	}
+	printf("\n");
+	printf("Score:");
+	for(i = 0;i<5;i++)
+	{
+		printf("%d ", student.score[i]);
+	}
+	printf("\n");
+	printf("average:%.2f ", &student.average);
+	printf("total:%d\n", &student.total);
+	return 0;
+}
