@@ -6,8 +6,12 @@
 #include"database.c"
 #include"interface.c"
 
-//#define DEFAULT_TERMINAL_WIDTH 80
-//#define DEFAULT_TERMINAL_HEIGHT 60
+int Authenticated()
+{
+    return 1;
+}
+
+
 
 int main()
 {
@@ -19,17 +23,62 @@ int main()
 	int nItem;
 	int sumPrice = 0;
 	int command;
+	item *tpi;
 	while(command != 6)// if command is 6, sum up the expense and exit 
 	{
-	    printf("Please ")
+	    system("clear");
+	    outputIntro();
+	    printf("Please ");
 		askcommand(&command);
 	    if(command == 1)// Show current item
 	    {
-		showList(head);
+		printf("There are %d items.\n", showList(head));
 	    }
 	    else if(command == 2)// Add item
 	    {
-		
+		tpi = constructItem();
+		if(tpi == NULL)
+		{
+		    printf("Memory overflow, can't construct new item.\n");
+		    command = 6;
+		}
+		else
+		{
+		    char a[NAMELEN + 1];
+		    askName(a);
+		    setName(tpi, a);
+
+		    item *insertPos = findPosition(head, tpi);
+		    if(insertPos->next == NULL)
+		    {
+			setPrice(tpi, askPrice());
+			addRemain(tpi, askRemain());
+			insertItem(insertPos, tpi);// New
+		    }
+		    else
+		    {
+
+			int cmpresult = cmpstr6(tpi->name, (insertPos->next)->name);
+			if(cmpresult == -1)
+			{
+			    setPrice(tpi, askPrice());
+			    addRemain(tpi, askRemain());
+			    insertItem(insertPos, tpi);// New
+			}
+			else
+			{
+			    if(cmpresult == 0)
+			    {
+				addRemain(insertPos->next, askChangeStorage());
+			    }
+			    else
+			    {
+				printf("[debug : insert]\n");
+			    }
+			    destroyItem(&tpi);
+			}
+		    }
+		}
 	    }
 	    else if(command == 3)// Delete item 
 	    {
@@ -47,8 +96,11 @@ int main()
 	    {
 		printf("Wrong command : %d. So, again, please ", command);
 	    }
+	    printf("Press [Enter] to proceed.\n");
+	    getchar();
 	}
 	// sum up the expense
+	destroyList(&head);
 	printf("Exit program.\n");
 	return 0;
     }

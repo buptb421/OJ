@@ -65,6 +65,15 @@ item *initList(void)
     return tpi;
 }
 
+void destroyItem(item **pi) // Dangerous! Use with a second concern.
+{
+    if(pi != NULL)
+    {
+	free(*pi);
+	pi = NULL;
+    }
+}
+
 void deleteItem(item *pi)// Actually this will delete the item after *pi and return the address of the next next item(*pi->next->next).
 {
     if(pi != NULL)
@@ -123,6 +132,9 @@ item *findPosition(item *head, item *newItem)// Actually find the item before th
     item *prevItem;
     while(head != NULL && !isRightPosition(head, newItem))
     {
+	char *ts = head->name;
+	for(int i = 0; i < NAMELEN; i++, ts++)
+	    printf("%c", *ts);
 	prevItem = head;
 	head = head->next;
     }

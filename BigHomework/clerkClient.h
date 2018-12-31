@@ -2,7 +2,9 @@
 #define _CLERKCLIENT_H
 
 #define NAMELEN 6	   				   
-			   				   
+#define DEFAULT_TERMINAL_WIDTH 80
+#define DEFAULT_TERMINAL_HEIGHT 60
+
 typedef struct item_info{  				   
     char name[NAMELEN];	   				   
     int price100;	   				   

@@ -1,10 +1,10 @@
-debugprog : debugprog.o
-	gcc debugprog.o -o debugprog
+Clerk : Clerk.o
+	gcc Clerk.o -o Clerk
 
-debugprog.o : debugprog.c clerkClient.h database.c interface.c
-	gcc debugprog.c -c
+Clerk.o : Clerk.c clerkClient.h database.c interface.c
+	gcc Clerk.c -c
 
 .PHONY : clean
 
 clean :
-	rm debugprog.o debugprog
+	rm Clerk.o Clerk
