@@ -6,7 +6,13 @@
 #include"clerkClient.h"
 #include"database.c"
 
-void askcommand(int *pcommand)
+void changePage(void)
+{
+    printf("Press ENTER to proceed.\n");
+    getchar();
+}
+
+void askCommand(int *pcommand)
 {
     printf("enter command from options 1 to 6.\nCommand :");
     scanf("%d", pcommand);
@@ -21,24 +27,27 @@ int askChangeStorage()
     return change;
 }
 
-int askRemain()
+void askRemain(int *r)
 {
-    int R;
     printf("Please enter the remaining number of item.\nRemain :");
-    scanf("%d", &R);
+    scanf("%d", r);
     getchar();
-    return R;
 }
 
-int askPrice()
+void askPrice(int *pri)
 {
     float price;
-    int price100;
     printf("Please enter the price of the item.\nPrice :");
     scanf("%f", &price);
     getchar();
-    price100 = (price + 0.005) * 100;
-    return price100;
+    *pri = (price + 0.005) * 100;
+}
+
+void askPurchaseNum(int *pur)
+{
+    printf("Please enter the number of purchase.\n");
+    scanf("%d", pur);
+    getchar();
 }
 
 void showName(item *p)
@@ -92,6 +101,8 @@ void askName(char *s)
     }
     *s = '\0';
 }
+
+
 
 /*
 char *constructStr(int n)

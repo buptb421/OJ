@@ -65,13 +65,10 @@ item *initList(void)
     return tpi;
 }
 
-void destroyItem(item **pi) // Dangerous! Use with a second concern.
+void destroyItem(item *pi) // Dangerous! Use with a second concern.
 {
     if(pi != NULL)
-    {
-	free(*pi);
-	pi = NULL;
-    }
+	free(pi);
 }
 
 void deleteItem(item *pi)// Actually this will delete the item after *pi and return the address of the next next item(*pi->next->next).
@@ -85,9 +82,8 @@ void deleteItem(item *pi)// Actually this will delete the item after *pi and ret
     }
 }
 
-void destroyList(item **phead)
+void destroyList(item *head)
 {
-    item *head = *phead;
     if(head != NULL)
     {
 	while(head->next != NULL)
@@ -100,7 +96,6 @@ void destroyList(item **phead)
     {
 	printf("Error, delete void list.\n");
     }
-    *phead = NULL;
 }
 
 int cmpstr6(char *str1, char *str2)
@@ -139,6 +134,14 @@ item *findPosition(item *head, item *newItem)// Actually find the item before th
 	head = head->next;
     }
     return prevItem;
+}
+
+int isExist(item *pos, item *newItem)
+{
+    if(pos->next != NULL && cmpstr6((pos->next)->name, newItem->name) == 0)
+	return 1;
+    else
+	return 0;
 }
 
 void insertItem(item *insertPos, item *newItem)// Insert newItem after insertPos.
