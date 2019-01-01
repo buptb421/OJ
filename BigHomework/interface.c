@@ -10,6 +10,7 @@ void changePage(void)
 {
     printf("Press ENTER to proceed.\n");
     getchar();
+    system("clear");
 }
 
 void askCommand(int *pcommand)
@@ -57,6 +58,12 @@ void showName(item *p)
 	printf("%c", *s);
 }
 
+void showPrice(int price100)
+{
+    double lf = price100 / 100.000;
+    printf("%.2lf", lf);
+}
+
 void showItem(item *head)
 {
     if(head != NULL)
@@ -92,7 +99,7 @@ int showList(item *head)
 
 void askName(char *s)
 {
-    printf("Please enter the name of the new item.\nItem name :");
+    printf("Please enter the name of the item.\nItem name :");
     scanf("%c", s);
     for(int i = 0; i < NAMELEN && *s != '\n' && *s != '\0'; i++)
     {
@@ -102,9 +109,6 @@ void askName(char *s)
     *s = '\0';
 }
 
-
-
-/*
 char *constructStr(int n)
 {
     return (char*)malloc(sizeof(char) * n);
@@ -118,22 +122,41 @@ void destroyStr(char *s)
 	printf("Try to clear void string.\n");
 }
 
-char *putMiddle(char *s, char c, desLen)
+char *putMiddle(const char *s, char c, int desLen)
 {
     int len = strlen(s);
-    char *news;
+    char *news, *ts;
     if(len >= desLen)
 	desLen = len;
 
-    news = constructStr(desLen + 1)
+    news = constructStr(desLen + 1);
+    ts = news;
     for(int i = 0; i < (desLen - len) / 2; i++)
-	
+    {
+	*ts = c;
+	ts++;
+    }
+    for(int i = 0; i < len; i++)
+    {
+	*ts = *s;
+	ts++;
+	s++;
+    }
+    for(int i = 0; i < (desLen - len + 1) / 2; i++)
+    {
+	*ts = c;
+	ts++;
+    }
+    *ts = '\0';
+    
     return news;
 }
-
+/*
 char *chart(int n, int *space, char **s)
+{
+    
+}
 */
-
 void outputIntro()
 {
     printf("Intro :\n");

@@ -133,13 +133,20 @@ int is_authenticated(void)
     /*
       return 1;
      */
+
+    puts(putMiddle("", '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(putMiddle("", ' ', DEFAULT_TERMINAL_WIDTH - 2), '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(putMiddle("Log in", ' ',DEFAULT_TERMINAL_WIDTH - 2), '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(putMiddle("", ' ', DEFAULT_TERMINAL_WIDTH - 2), '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle("", '#', DEFAULT_TERMINAL_WIDTH));
+    
+    printf("Please enter password.");
     int i;
     char a[7], passw[] = "000000", *p, *q;
     for(int try = 0; try < 3; try++)
     {
-	
+	printf("\nPassWord :");
 	scanf("%s", a);
-	printf("%s", a);
 	getchar();
 	p = passw;
 	q = a;
@@ -170,7 +177,7 @@ void procedure_receive_command(int *pcommand)
 {
     printf("[Command]\n");
     askCommand(pcommand);
-    changePage();
+    system("clear");
 }
 
 void procedure_show_list(item *head)
@@ -186,7 +193,6 @@ void procedure_name_item(item *pi, int command)
     char a[NAMELEN + 1];
     askName(a);
     setName(pi, a);
-    changePage();
 }
 
 void procedure_change_storage(item *pi)
@@ -195,6 +201,7 @@ void procedure_change_storage(item *pi)
     printf("[Change]\n");
     askRemain(&r);
     addRemain(pi, r);
+    showItem(pi);
     changePage();
 }
 
@@ -204,10 +211,10 @@ void procedure_ask_item_price_remain(item *pi)
     printf("[Price]\n");
     askPrice(&pri);
     setPrice(pi, pri);
-    changePage();
     printf("[Remain]\n");
     askRemain(&rem);
     addRemain(pi, rem);
+    showItem(pi);
     changePage();
 }
 
@@ -228,7 +235,7 @@ void procedure_found_item(item *pi)
 void procedure_n_found_item(item *pi, int command)
 {
     printf("scene %d\n", command);
-    printf("Not found\n");
+    printf("[Not found]\n");
     changePage();
 }
 
