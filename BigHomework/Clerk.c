@@ -32,11 +32,14 @@ int main()
     if(!is_authenticated())
     {
 	procedure_access_denied();
+	changePage();
 	return -1;
     }
     else
     {
 	procedure_welcome();
+	changePage();
+	
 	item *head = initList();
 	if(head == NULL)
 	{
@@ -49,58 +52,82 @@ int main()
 	    item *tpi, *tPos;
 	    int command = 6;
 	    int sumExpense = 0;
-	    // Function
-	    
-	    /*
-	      int nEdge;
-	      int *wEdge;// Width of edge
-	      char *cEdge;// Character of edge
-	      
-	      int nIndent;
-	      int sIndent;// Steps of indent  
-	      // Appearence
-	    */
 	    
 	    do
 	    {
+		page_rec_com();
 		procedure_receive_command(&command);
+		changePage_silent();
+		
 		if(command == 1)// Show list
 		{
+		    page_show_list();
 		    procedure_show_list(head);
+		    changePage();
 		}
 		else if(command == 2)// Add new item or change storage condition of existing item
-		{   
+		{
+		    page_new_change();
+		    
 		    backstage_new_item(&tpi);
 		    procedure_name_item(tpi, command);
 		    tPos = findPosition(head, tpi);
+
+		    chagePage_silent();
+		    
 		    if(isExist(tPos, tpi))
 		    {
+			page_change();
+			
 			tPos = tPos->next;
 			procedure_change_storage(tPos);
 			backstage_destroy_item(tpi);
+
+			changePage();
 		    }
 		    else
 		    {
+			page_new_item();
+			
 			procedure_ask_item_price_remain(tpi);
 			backstage_insert_item(tPos, tpi);
+
+			changePage();
 		    }
 		}
 		else if(command == 3)// Delete item
 		{
+		    page_delete();
+		    
 		    backstage_new_item(&tpi);
 		    procedure_name_item(tpi, command);
 		    tPos = findPosition(head, tpi);
+
+		    changePage_silent();
+		    page_delete();
+		    
 		    if(isExist(tPos, tpi))
 		    {
 			procedure_delete_item(tPos);
-			backstage_destroy_item(tpi);
+			backstage_destroy_item(tpi);	
 		    }
+		    else
+		    {
+			procedure_delete_n_found();
+		    }
+		    changePage();
 		}
 		else if(command == 4)// Search item
 		{
+		    page_search();
+		    
 		    backstage_new_item(&tpi);
 		    procedure_name_item(tpi, command);
 		    tPos = findPosition(head, tpi);
+
+		    changePage_silent();
+		    page_search();
+		    
 		    if(isExist(tPos, tpi))
 		    {
 			tPos = tPos->next;
@@ -111,12 +138,19 @@ int main()
 			procedure_n_found_item(tpi, command);
 		    }
 		    backstage_destroy_item(tpi);
+		    changePage();
 		}
 		else if(command == 5)// Purchase item
 		{
+		    page_purchase();
+		    
 		    backstage_new_item(&tpi);
 		    procedure_name_item(tpi, command);
 		    tPos = findPosition(head, tpi);
+
+		    changePage_slent();
+		    page_purchase();
+		    
 		    if(isExist(tPos, tpi))
 		    {
 			tPos = tPos->next;
@@ -127,16 +161,30 @@ int main()
 			procedure_n_found_item(tpi, command);
 		    }
 		    backstage_destroy_item(tpi);
+
+		    changePage();
 		}
 		else if(command != 6)// Wrong command
 		{
+		    page_wrong_command();
+
 		    procedure_wrong_command(command);
+
+		    changePage();
 		}
 		tpi = NULL;
 		tPos = NULL;
 	    }while(command != 6);
+
+	    page_sum();
 	    procedure_sum_expense(sumExpense);
+	    changePage();
+
+	    page_exit();
 	    procedure_exit();
+	    changePage();
+	    
+	    backstage_destroy_list(head);
 	    return 0;
 	}
     }
@@ -171,22 +219,18 @@ int is_authenticated(void)
 void procedure_access_denied(void)
 {
     printf("\nAccess denied.\n");
-    changePage();
 }
 
 void procedure_welcome(void)
 {
     printf("\nLogged in.\nWelcome, operator.\n");
-    changePage();
 }
 
 void procedure_receive_command(int *pcommand)
 {
-    page_rec_com();
     printf("\n\n\n");
     
     askCommand(pcommand);
-    changePage_silent();
 }
 
 void procedure_show_list(item *head)
@@ -202,7 +246,6 @@ void procedure_show_list(item *head)
     printf("\n");
     
     printf("There are %d items.\n", showList(head));
-    changePage();
 }
 
 void procedure_name_item(item *pi, int command)
@@ -246,8 +289,7 @@ void procedure_change_storage(item *pi)
     printf("[Change]\n");
     askRemain(&r);
     addRemain(pi, r);
-    showItem(pi);
-    changePage();
+    showItem(1, pi);
 }
 
 void procedure_ask_item_price_remain(item *pi)
@@ -259,8 +301,7 @@ void procedure_ask_item_price_remain(item *pi)
     printf("[Remain]\n");
     askRemain(&rem);
     addRemain(pi, rem);
-    showItem(pi);
-    changePage();
+    showItem(1, pi);
 }
 
 void procedure_delete_item(item *pi)
@@ -273,15 +314,13 @@ void procedure_delete_item(item *pi)
 void procedure_found_item(item *pi)
 {
     printf("[found]\n");
-    showItem(pi);
-    changePage();
+    showItem(1, pi);
 }
 
 void procedure_n_found_item(item *pi, int command)
 {
     printf("scene %d\n", command);
     printf("[Not found]\n");
-    changePage();
 }
 
 void procedure_purchase_item(item *pi, int *sumExpense)
@@ -291,25 +330,22 @@ void procedure_purchase_item(item *pi, int *sumExpense)
     askPurchaseNum(&buyNum);
     *sumExpense += buyNum * pi->price100;
     pi->remain_num -= buyNum;
-    changePage();
 }
 
 void procedure_wrong_command(int command)
 {
     printf("[wrong command]\n");
-    changePage();
 }
+
 void procedure_sum_expense(int sumExpense)
 {
     printf("[sumup]\n");
     printf("The total expense is %d Yuan.", sumExpense);
-    changePage();
 }
 
 void procedure_exit(void)
 {
     printf("[exit]\n");
-    changePage();
 }
 
 void backstage_insert_item(item *pPos, item *pNew)
@@ -327,3 +363,4 @@ void backstage_destroy_item(item *pi)
     destroyItem(pi);
 } 
 
+void backstage_destroy_list(item *head);

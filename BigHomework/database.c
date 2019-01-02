@@ -128,9 +128,6 @@ item *findPosition(item *head, item *newItem)// Actually find the item before th
     item *prevItem;
     while(head != NULL && !isRightPosition(head, newItem))
     {
-	char *ts = head->name;
-	for(int i = 0; i < NAMELEN; i++, ts++)
-	    printf("%c", *ts);
 	prevItem = head;
 	head = head->next;
     }
