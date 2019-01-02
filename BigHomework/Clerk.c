@@ -5,6 +5,7 @@
 #include"clerkClient.h"
 #include"database.c"
 #include"interface.c"
+#include"page.c"
 
 int is_authenticated(void);
 void procedure_access_denied(void);
@@ -44,9 +45,22 @@ int main()
 	}
 	else
 	{
+	  
 	    item *tpi, *tPos;
 	    int command = 6;
 	    int sumExpense = 0;
+	    // Function
+	    
+	    /*
+	      int nEdge;
+	      int *wEdge;// Width of edge
+	      char *cEdge;// Character of edge
+	      
+	      int nIndent;
+	      int sIndent;// Steps of indent  
+	      // Appearence
+	    */
+	    
 	    do
 	    {
 		procedure_receive_command(&command);
@@ -130,22 +144,15 @@ int main()
 
 int is_authenticated(void)
 {
-    /*
-      return 1;
-     */
-
-    puts(putMiddle("", '#', DEFAULT_TERMINAL_WIDTH));
-    puts(putMiddle(putMiddle("", ' ', DEFAULT_TERMINAL_WIDTH - 2), '#', DEFAULT_TERMINAL_WIDTH));
-    puts(putMiddle(putMiddle("Log in", ' ',DEFAULT_TERMINAL_WIDTH - 2), '#', DEFAULT_TERMINAL_WIDTH));
-    puts(putMiddle(putMiddle("", ' ', DEFAULT_TERMINAL_WIDTH - 2), '#', DEFAULT_TERMINAL_WIDTH));
-    puts(putMiddle("", '#', DEFAULT_TERMINAL_WIDTH));
+    changePage_silent();
+    page_auth();
     
-    printf("Please enter password.");
+    printf("Please enter password.\n");
     int i;
-    char a[7], passw[] = "000000", *p, *q;
+    char a[7], passw[] = "Xltsb0", *p, *q;
     for(int try = 0; try < 3; try++)
     {
-	printf("\nPassWord :");
+	printf("PassWord :");
 	scanf("%s", a);
 	getchar();
 	p = passw;
@@ -163,33 +170,71 @@ int is_authenticated(void)
 
 void procedure_access_denied(void)
 {
-    printf("access denied.\n");
+    printf("\nAccess denied.\n");
     changePage();
 }
 
 void procedure_welcome(void)
 {
-    printf("Logged in.\nWelcome, operator.\n");
+    printf("\nLogged in.\nWelcome, operator.\n");
     changePage();
 }
 
 void procedure_receive_command(int *pcommand)
 {
-    printf("[Command]\n");
+    page_rec_com();
+    printf("\n\n\n");
+    
     askCommand(pcommand);
-    system("clear");
+    changePage_silent();
 }
 
 void procedure_show_list(item *head)
 {
-    printf("[Show list]\n");
+    puts(putMiddle(myStr(""), '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(putMiddle(myStr(""), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		   '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(putMiddle(myStr("Show storage"), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		   '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(putMiddle(myStr(""), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		   '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(myStr(""), '#', DEFAULT_TERMINAL_WIDTH));
+    printf("\n");
+    
     printf("There are %d items.\n", showList(head));
     changePage();
 }
 
 void procedure_name_item(item *pi, int command)
 {
-    printf("Scene %d.\n", command);
+    puts(putMiddle(myStr(""), '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(putMiddle(myStr(""), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		   '#', DEFAULT_TERMINAL_WIDTH));
+    if(command == 2)
+    {
+	puts(putMiddle(putMiddle(myStr("New item / Change remaining"), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		       '#', DEFAULT_TERMINAL_WIDTH));
+    }
+    else if(command == 3)
+    {
+	puts(putMiddle(putMiddle(myStr("Delete item"), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		       '#', DEFAULT_TERMINAL_WIDTH));
+    }
+    else if(command == 4)
+    {
+	puts(putMiddle(putMiddle(myStr("Search item"), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		       '#', DEFAULT_TERMINAL_WIDTH));
+    }
+    else if(command == 5)
+    {
+	puts(putMiddle(putMiddle(myStr("Purchase item"), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		       '#', DEFAULT_TERMINAL_WIDTH));
+    }
+    
+    puts(putMiddle(putMiddle(myStr(""), ' ', DEFAULT_TERMINAL_WIDTH - 2),
+		   '#', DEFAULT_TERMINAL_WIDTH));
+    puts(putMiddle(myStr(""), '#', DEFAULT_TERMINAL_WIDTH));
+    
     char a[NAMELEN + 1];
     askName(a);
     setName(pi, a);
@@ -276,103 +321,9 @@ void backstage_new_item(item **ppi)
 {
     *ppi = constructItem();
 }
+
 void backstage_destroy_item(item *pi)
 {
     destroyItem(pi);
-}
-
-/*
-int main()
-{
-    item *head = initList();
-    if(head == NULL)
-	return 1;
-    else if(Authenticated())
-    {
-	int nItem;
-	int sumPrice = 0;
-	int command;
-	item *tpi;
-	while(command != 6)// if command is 6, sum up the expense and exit 
-	{
-	    system("clear");
-	    outputIntro();
-	    printf("Please ");
-		askcommand(&command);
-	    if(command == 1)// Show current item
-	    {
-		printf("There are %d items.\n", showList(head));
-	    }
-	    else if(command == 2)// Add item
-	    {
-		tpi = constructItem();
-		if(tpi == NULL)
-		{
-		    printf("Memory overflow, can't construct new item.\n");
-		    command = 6;
-		}
-		else
-		{
-		    char a[NAMELEN + 1];
-		    askName(a);
-		    setName(tpi, a);
-
-		    item *insertPos = findPosition(head, tpi);
-		    if(insertPos->next == NULL)
-		    {
-			setPrice(tpi, askPrice());
-			addRemain(tpi, askRemain());
-			insertItem(insertPos, tpi);// New
-		    }
-		    else
-		    {
-
-			int cmpresult = cmpstr6(tpi->name, (insertPos->next)->name);
-			if(cmpresult == -1)
-			{
-			    setPrice(tpi, askPrice());
-			    addRemain(tpi, askRemain());
-			    insertItem(insertPos, tpi);// New
-			}
-			else
-			{
-			    if(cmpresult == 0)
-			    {
-				addRemain(insertPos->next, askChangeStorage());
-			    }
-			    else
-			    {
-				printf("[debug : insert]\n");
-			    }
-			    destroyItem(&tpi);
-			}
-		    }
-		}
-	    }
-	    else if(command == 3)// Delete item 
-	    {
-		
-	    }
-	    else if(command == 4)// Search item
-	    {
-		
-	    }
-	    else if(command == 5)// Purchase item
-	    {
-		
-	    }
-	    else if(command != 6)// wrong command
-	    {
-		printf("Wrong command : %d. So, again, please ", command);
-	    }
-	    printf("Press [Enter] to proceed.\n");
-	    getchar();
-	}
-	// sum up the expense
-	destroyList(&head);
-	printf("Exit program.\n");
-	return 0;
-    }
-}
-*/  
+} 
 

@@ -3,13 +3,26 @@
 
 #include<stdio.h>
 #include<string.h>
+#include<stdarg.h>
+
 #include"clerkClient.h"
 #include"database.c"
 
 void changePage(void)
 {
-    printf("Press ENTER to proceed.\n");
-    getchar();
+    printf("\nPress ENTER to proceed.\n");
+
+    char a;
+    do
+    {
+	a = getchar();
+    }while(a != '\n');
+    
+    system("clear");
+}
+
+void changePage_silent(void)
+{
     system("clear");
 }
 
@@ -17,7 +30,12 @@ void askCommand(int *pcommand)
 {
     printf("enter command from options 1 to 6.\nCommand :");
     scanf("%d", pcommand);
-    getchar();
+
+    char a;
+    do
+    {
+	a = getchar();
+    }while(a != '\n');
 }
 
 int askChangeStorage()
@@ -25,6 +43,13 @@ int askChangeStorage()
     int change;
     printf("Change storage.\nadd :");
     scanf("%d", &change);
+
+    char a;
+    do
+    {
+	a = getchar();
+    }while(a != '\n');
+    
     return change;
 }
 
@@ -32,7 +57,12 @@ void askRemain(int *r)
 {
     printf("Please enter the remaining number of item.\nRemain :");
     scanf("%d", r);
-    getchar();
+
+    char a;
+    do
+    {
+	a = getchar();
+    }while(a != '\n');
 }
 
 void askPrice(int *pri)
@@ -40,7 +70,13 @@ void askPrice(int *pri)
     float price;
     printf("Please enter the price of the item.\nPrice :");
     scanf("%f", &price);
-    getchar();
+
+    char a;
+    do
+    {
+	a = getchar();
+    }while(a != '\n');
+    
     *pri = (price + 0.005) * 100;
 }
 
@@ -48,7 +84,12 @@ void askPurchaseNum(int *pur)
 {
     printf("Please enter the number of purchase.\n");
     scanf("%d", pur);
-    getchar();
+
+    char a;
+    do
+    {
+	a = getchar();
+    }while(a != '\n');
 }
 
 void showName(item *p)
@@ -58,10 +99,10 @@ void showName(item *p)
 	printf("%c", *s);
 }
 
-void showPrice(int price100)
+double tranPrice(int price100)
 {
     double lf = price100 / 100.000;
-    printf("%.2lf", lf);
+    return lf;
 }
 
 void showItem(item *head)
@@ -70,7 +111,10 @@ void showItem(item *head)
     {
 	printf("Name : ");
 	showName(head);
-	printf("\nPrice : %d\nRemain : %d\n", head->price100, head->remain_num);
+
+	printf("\nPrice : ");
+	printf("%.2lf", tranPrice(head->price100));
+	printf("\nRemain : %d\n", head->remain_num);
 	
 	for(int i = 0; i < 60; i++)
 	    printf("-");
@@ -114,6 +158,45 @@ char *constructStr(int n)
     return (char*)malloc(sizeof(char) * n);
 }
 
+char *myStr(char *const s)
+{
+    char *r, *w;
+    char *ns;
+    ns = constructStr(NAMELEN + 1);
+
+    r = s;
+    w = ns;
+    
+    while(*r != '\0')
+    {
+	*w = *r;
+	w++;
+	r++;
+    }
+    *w = '\0';
+    
+    return ns;
+}// Need to be destroied later
+
+char *dealName(char *s)
+{
+    char *ns, *tp;
+    ns = constructStr(NAMELEN + 1);
+    if(ns != NULL)
+    {
+	tp = ns;
+	for(int i = 0; i < NAMELEN && *s != '\0'; i++)
+	{
+	    *tp = *s;
+	    tp++;
+	    s++;
+	}
+	*tp = '\0';
+    }
+    
+    return ns;
+}// Need to be destoried later
+
 void destroyStr(char *s)
 {
     if(s != NULL)
@@ -122,10 +205,10 @@ void destroyStr(char *s)
 	printf("Try to clear void string.\n");
 }
 
-char *putMiddle(const char *s, char c, int desLen)
+char *putMiddle(char *s, char c, int desLen)
 {
     int len = strlen(s);
-    char *news, *ts;
+    char *news, *ts, *r;
     if(len >= desLen)
 	desLen = len;
 
@@ -136,11 +219,12 @@ char *putMiddle(const char *s, char c, int desLen)
 	*ts = c;
 	ts++;
     }
+    r = s;
     for(int i = 0; i < len; i++)
     {
-	*ts = *s;
+	*ts = *r;
 	ts++;
-	s++;
+	r++;
     }
     for(int i = 0; i < (desLen - len + 1) / 2; i++)
     {
@@ -148,18 +232,34 @@ char *putMiddle(const char *s, char c, int desLen)
 	ts++;
     }
     *ts = '\0';
-    
+
+    destroyStr(s);
     return news;
 }
-/*
-char *chart(int n, int *space, char **s)
+
+void outputTempStr(char *s)
 {
-    
+    puts(s);
+    free(s);
 }
-*/
-void outputIntro()
+
+void vsnpItem(char *s, int len, ...)
 {
-    printf("Intro :\n");
+    va_list argum;
+    va_start (argum, len);
+    vsnprintf(s, len, "%5d%15s%20.2lf%20d", argum);
+    va_end(argum);
+}
+
+char *itemchart(int count, item *pi)
+{
+    char *s = constructStr(DEFAULT_TERMINAL_WIDTH + 1);
+    char *pName = dealName(pi->name);
+
+    vsnpItem(s, DEFAULT_TERMINAL_WIDTH + 1, count, pName, tranPrice(pi->price100), pi->remain_num);
+    
+    free(pName);
+    return s;
 }
   
 #endif
