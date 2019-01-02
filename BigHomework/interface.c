@@ -18,12 +18,21 @@ void changePage(void)
 	a = getchar();
     }while(a != '\n');
     
-    system("clear");
+    system("cls");
 }
 
 void changePage_silent(void)
 {
-    system("clear");
+    system("cls");
+}
+
+void absorbBlanc(void)
+{
+	char a;
+    do
+    {
+	a = getchar();
+    }while(a != '\n');
 }
 
 void askCommand(int *pcommand)
@@ -31,11 +40,7 @@ void askCommand(int *pcommand)
     printf("enter command from options 1 to 6.\nCommand :");
     scanf("%d", pcommand);
 
-    char a;
-    do
-    {
-	a = getchar();
-    }while(a != '\n');
+    absorbBlanc();
 }
 
 int askChangeStorage()
@@ -150,6 +155,10 @@ void askName(char *s)
 	s++;
 	scanf("%c", s);
     }
+    
+    if(*s != '\n' && *s != '\0')
+    	absorbBlanc();
+    
     *s = '\0';
 }
 

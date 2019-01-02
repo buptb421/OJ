@@ -24,6 +24,7 @@ void edge_down(char c, int width)
 
 void page_auth()
 {
+	changePage_silent();
     edge_up('#', DEFAULT_TERMINAL_WIDTH);
     edge_body(myStr("Log in"), '#', DEFAULT_TERMINAL_WIDTH);
     edge_down('#', DEFAULT_TERMINAL_WIDTH);
