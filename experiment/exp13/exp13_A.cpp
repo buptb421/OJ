@@ -68,26 +68,25 @@ int findInArray(const int *array, const int element, const int size)
 
 void outputAdjacent(const int *array, const int m, const int size)
 {
-    if(m < 1)
-	printf("NULL\n");
-    else if(m == 1)
+    int outn = 0;
+    if(m <= size && m >= 1)
     {
-	array++;
-	printf("%d\n", *array);
-    }
-    else if(m <= size)
-    {
-	for(int i = 2; i < m; i++)
-	{
+	for(int i = 1; i < m; i++)
 	    array++;
+	if(m > 1)
+	{
+	    printf("%d", *(array - 1));
+	    outn++;
 	}
-	if(m == size)
-	    printf("%d\n", *array);
-	else
-	    printf("%d %d\n", *array, *(array + 2));
+	if(outn > 0)
+	    printf(" ");
+	if(m < size)
+	{
+	    printf("%d", *(array + 1));
+	    outn++;
+	}
     }
-    else
-    {
-	printf("[Unexpected entrence.]\n");
-    }
+    if(outn == 0)
+	printf("NULL");
+    printf("\n");
 }
