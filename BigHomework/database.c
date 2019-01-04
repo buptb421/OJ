@@ -7,28 +7,9 @@
 
 #include"clerkClient.h"
 
-void setName(item *p, char *s)
-{
-    char *w = p->name;
-    int i;
-    for(i = 0; i < 6 && *s != '\0'; i++)
-    {
-	*w = *s;
-	w++;
-	s++;
-    }
-    if(i < 6)
-	*w = '\0';
-}
-
 int is_valid_name(char *s)
 {
     return *s != '\0';
-}
-
-void setPrice(item *p, int p100)
-{
-    p->price100 = p100;
 }
 
 void addRemain(item *p, int r)
@@ -42,9 +23,8 @@ item *constructItem(void)
     pi =  (item*)malloc(sizeof(item));
     if(pi != NULL)
     {
-	char c[] = "\0";
-	setName(pi, c);
-	setPrice(pi, 0);
+	*pi->name = '\0';
+	pi->price100 = 0;
 	pi->remain_num = 0;
 	pi->next = NULL;
     }

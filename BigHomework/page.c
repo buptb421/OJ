@@ -15,6 +15,13 @@ void page_auth(void)
 	     NULL);
 }
 
+void page_fail_init(void)
+{
+	add_edge('+', '+', DEFAULT_TERMINAL_WIDTH,
+		 "Fail to initiate",
+		 NULL);
+}
+
 void page_rec_com(void)
 {
     add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,

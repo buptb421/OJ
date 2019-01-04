@@ -5,162 +5,297 @@
 #include"interface.c"
 #include"page.c"
 
+void backstage_insert_item(item *pPos, item *pNew)
+{
+    insertItem(pPos, pNew);
+}
+
+void backstage_new_item(item **ppi)
+{
+    *ppi = constructItem();
+}
+
+void backstage_destroy_item(item *pi)
+{
+    destroyItem(pi);
+} 
+
+void backstage_destroy_list(item *head)
+{
+    destroyList(head);
+}
+
 void procedure_authentication(int *is_auth)
 {
     *is_auth = 0;
-    printf("Please enter password.\n");
     int i;
-    char a[7], passw[] = "Xltsb0", *p, *q;
+    char a[7], passw[] = "000000", *p, *q;
+    
+	changePage_silent();
+	page_auth();
+	
+    printf("\n    Please enter password.\n");
+    
     for(int try = 0; try < 3 && *is_auth == 0; try++)
     {
-	printf("PassWord :");
-	scanf("%s", a);
-	getchar();
-	p = passw;
-	q = a;
-	for(i = 0; i < 6 && *p == *q; i++)
-	{
-	    p++;
-	    q++;
-	}
-	if(i == 6)
-	    *is_auth = 1;
+		printf("    PassWord :");
+		scanf("%s", a);
+		getchar();
+		p = passw;
+		q = a;
+		for(i = 0; i < 6 && *p == *q; i++)
+		{
+	    	p++;
+	    	q++;
+		}
+		if(i == 6)
+		{
+	    	*is_auth = 1;
+	    }
     }
-    changePage_silent();
+	changePage_silent();
 }
 
 void procedure_access_denied(void)
 {
-    printf("\nAccess denied.\n");
+	page_auth();
+	
+    printf("\n    Access denied.\n");
+    
     changePage();
 }
 
 void procedure_welcome(void)
 {
-    printf("\nLogged in.\nWelcome, operator.\n");
+	page_auth();
+	
+    printf("\n    Logged in.\n    Welcome, operator.\n");
+    
     changePage();
+}
+
+void procedure_fail_init()
+{
+	page_fail_init();
+	
+	printf("Failed to construct storage information database. Exit.\n");
+	
+	changePage();
 }
 
 void procedure_receive_command(int *pcommand)
 {
-    printf("\n");
+    page_rec_com();
     
-    askCommand(pcommand);
+    printf("\n    enter command from options 1 to 6.\n    Command :");
+    scanf("%d", pcommand);
+    absorbBlanc();
+    
     changePage_silent();    
 }
 
 void procedure_show_list(item *head)
 {   
-    printf("There are %d items.\n", showList(head));
+	page_show_list();
+	
+    printf("\n    There are %d items.\n", showList(head));
+    
     changePage();
 }
 
 void procedure_name_item(item *pi)
 {   
-    char a[NAMELEN + 1];
-    askName(a);
-    if(*a == '\0')
+    char *s = pi->name;
+
+    printf("\n    Please enter the name of the item.\n    Item name :");
+    scanf("%c", s);
+    
+    for(int i = 1; i < NAMELEN && *s != '\n' && *s != '\0'; i++)
     {
-	printf("\nInvalid input!\n");
-	changePage();
+		s++;
+		scanf("%c", s);
     }
-    setName(pi, a);
-    changePage_silent();
+    if(*s != '\n' && *s != '\0')
+    	absorbBlanc();
+    else
+    	*s = '\0';
+
+	s = pi->name;
+    if(*s == '\0')
+    {
+		printf("\nInvalid input!\n");
+		
+		changePage();
+    }
+    else
+    {   
+    	changePage_silent();
+	}
 }
 
 void procedure_wrong_name()
 {
-    printf("Since the name is not valid, the operation has been aborted.\n");
+	page_wrong_name();
+	
+    printf("\n    Since the name is not valid, the operation has been aborted.\n");
+    
     changePage();
 }
 
 void procedure_change_storage(item *pi)
 {
+	item i, *tpi;
+	i.next = pi;
+	tpi = pi->next;
+	pi->next = NULL;
     int r;
-    printf("[Change]\n");
-    askRemain(&r);
+    
+	page_change();
+	
+	showList(&i);
+    printf("\n    Please enter the number of item that will be added into storage.\n    Add :");
+    scanf("%d", &r);
+    absorbBlanc();
     addRemain(pi, r);
-    showItem(1, pi);
+    printf("\n    the item will be changed into :\n");
+    showList(&i);
+    
+    pi->next = tpi;
 
     changePage();
 }
 
 void procedure_ask_item_price_remain(item *pi)
 {
-    int pri, rem;
-    askPrice(&pri);
-    setPrice(pi, pri);
+	item i;
+	i.next = pi;
+	double price;
+	int remain;
+	
+	page_new_item();
+	printf("\n    Add price.\n\n");
+	showList(&i);
+    printf("\n    Please enter the price of the item.\n    Price :");
+    scanf("%lf", &price);
+    absorbBlanc();
+    pi->price100 = (price + 0.005) * 100;
 
     changePage_silent();
+    
     page_new_item();
-    askRemain(&rem);
-    addRemain(pi, rem);
-
-    item temp;
-    temp.next = pi;
-    showList(&temp);
-
+    printf("\n    Add remaining number.\n\n");
+    showList(&i);
+    printf("\n    Please enter the remaining number of item.\n    Remain :");
+    scanf("%d", &remain);
+    absorbBlanc();
+    addRemain(pi, remain);
+    
+    changePage_silent();
+    
+    page_new_item();
+    printf("\n    The following item has been added.\n\n");
+    showList(&i);
+	
     changePage();
 }
 
 void procedure_delete_item(item *pi)
-{
-    printf("[Delete]\n");
-    
-    item *tp = pi->next->next;
+{   
+	item *tp = pi->next->next;
     pi->next->next = NULL;
+    char c;
+    
+	page_delete();
     showList(pi);
-
-    pi->next->next = tp;
-    deleteItem(pi);
+	pi->next->next = tp;
+	printf("\n    The item will be deleted. Are you sure to proceed? Please enter y/n.\n    [y]es or [n]o :");
+	scanf("%c", &c);
+	absorbBlanc();
+    
+    if(c == 'y')
+    {
+    	deleteItem(pi);
+    	printf("\n    The item is deleted.\n");
+	}
+	else if(c == 'n')
+	{
+		printf("\n    Will not delete item.\n");
+	}
+	else 
+	{
+		printf("\nWrong input!\nOperation abort.\n");
+	}
+	
     changePage();
 }
 
-void procedure_delete_n_found(item *pi)
+void procedure_n_found(item *pi)
 {
-    printf("[Delete not found]\n");
+	printf("\n    The item :\n      ");
+    outputTempStr(dealName(pi->name));
+    printf("    does not exist.\n");
+    
     changePage();
 }
 
 void procedure_found_item(item *pi)
 {
-    printf("[found]\n");
-    showItem(1, pi);
-    changePage();
-}
-
-void procedure_n_found_item(item *pi)
-{
-    printf("[Not found]");
-    outputTempStr(dealName(pi->name));
+	item i, *tpi = pi->next;
+	pi->next = NULL;
+	
+	page_search();
+    printf("\n    Item has been found :\n\n");
+    showList(&i);
+    pi->next = tpi;
+    
     changePage();
 }
 
 void procedure_purchase_item(item *pi, int *sumExpense)
 {
     int buyNum;
-    printf("[purchase]\n");
-    askPurchaseNum(&buyNum);
-    *sumExpense += buyNum * pi->price100;
-    pi->remain_num -= buyNum;
+    item i, *tpi = pi->next;
+    i.next = pi;
+    
+    page_purchase();
+    showList(&i);
+    printf("\n    Please enter the number of purchase.\n    Number :");
+    scanf("%d", &buyNum);
+    absorbBlanc();
+    if(buyNum > pi->remain_num)
+    {
+    	printf("\n    The remain number of item is not enough!\n    Will not purchase anything.\n");
+	}
+	else
+	{
+		*sumExpense += buyNum * pi->price100;
+    	pi->remain_num -= buyNum;
+    	printf("\n    The item will be changed into :\n");
+    	showList(&i);
+	}
+    pi->next = tpi;
+    
     changePage();
 }
 
 void procedure_wrong_command(int command)
 {
-    printf("[wrong command]\n");
+	page_rec_com();
+    printf("\n    Command %d is wrong!\n", command);
+    
     changePage();
 }
 
 void procedure_sum_expense(int sumExpense)
 {
-    printf("[sumup]\n");
-    printf("The total expense is %d Yuan.", sumExpense);
+   	page_sum();
+    printf("\n    The total expense is %.2lf Yuan.", tranPrice(sumExpense));
+    
     changePage();
 }
 
 void procedure_exit(void)
 {
-    printf("[exit]\n");
+	page_exit();
     changePage();
 }

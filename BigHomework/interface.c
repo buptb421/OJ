@@ -252,7 +252,7 @@ void edge_down(char line, char point, int width)
 	    ' ', DEFAULT_TERMINAL_WIDTH)
 	);
 
-   outputTempStr(
+    outputTempStr(
 	putMiddle(
 	    putMiddle(
 		putMiddle(
@@ -310,85 +310,4 @@ int showList(item *head)
     return count;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void askCommand(int *pcommand)
-{
-    printf("enter command from options 1 to 6.\nCommand :");
-    scanf("%d", pcommand);
-
-    absorbBlanc();
-}
-
-int askChangeStorage()
-{
-    int change;
-    printf("Change storage.\nadd :");
-    scanf("%d", &change);
-
-    absorbBlanc();
-    
-    return change;
-}
-
-void askRemain(int *r)
-{
-    printf("Please enter the remaining number of item.\nRemain :");
-    scanf("%d", r);
-
-    absorbBlanc();
-}
-
-void askPrice(int *pri)
-{
-    float price;
-    printf("Please enter the price of the item.\nPrice :");
-    scanf("%f", &price);
-
-    absorbBlanc();
-    
-    *pri = (price + 0.005) * 100;
-}
-
-void askPurchaseNum(int *pur)
-{
-    printf("Please enter the number of purchase.\nNumber of price :");
-    scanf("%d", pur);
-
-    absorbBlanc();
-}
-
-void askName(char *s)
-{
-    printf("Please enter the name of the item.\nItem name :");
-    scanf("%c", s);
-    for(int i = 0; i < NAMELEN && *s != '\n' && *s != '\0'; i++)
-    {
-	s++;
-	scanf("%c", s);
-    }
-    
-    if(*s != '\n' && *s != '\0')
-    	absorbBlanc();
-    
-    *s = '\0';
-}
-  
 #endif
