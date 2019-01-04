@@ -17,6 +17,13 @@ void setName(item *p, char *s)
 	w++;
 	s++;
     }
+    if(i < 6)
+	*w = '\0';
+}
+
+int is_valid_name(char *s)
+{
+    return *s != '\0';
 }
 
 void setPrice(item *p, int p100)
@@ -125,7 +132,7 @@ int isRightPosition(item *pi, item *newItem)
 
 item *findPosition(item *head, item *newItem)// Actually find the item before the wanted item
 {
-    item *prevItem;
+    item *prevItem = NULL;
     while(head != NULL && !isRightPosition(head, newItem))
     {
 	prevItem = head;

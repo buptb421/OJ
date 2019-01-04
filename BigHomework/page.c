@@ -1,51 +1,108 @@
+#ifndef _PAGE_C
+#define _PAGE_C
+
 #include<stdio.h>
 #include<stdlib.h>
 
 #include"clerkClient.h"
 #include"database.c"
-#include"interface.c"
-    
-void edge_up(char line, char point, int width)
+#include"interface.c"   
+
+void page_auth(void)
 {
-    outputTempStr(putMiddle(putMiddle(myStr(""), line, width - 2), point, width));
-    outputTempStr(putMiddle(putMiddle(myStr(""), ' ', width - 2), line, width));
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Log in",
+	     NULL);
 }
 
-void edge_body(char *s, char line, int width)
+void page_rec_com(void)
 {
-    outputTempStr(putMiddle(putMiddle(s, ' ', width - 2), line, width));
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "1. Show storage",
+	     "2. New item /",
+	     "Change remain",
+	     "3. Delete item",
+	     "4. Search item",
+	     "5. Purchase item",
+	     "6. Accounting & Exit",
+	     NULL);
 }
 
-void edge_down(char line, char point, int width)
+void page_show_list(void)
 {
-    outputTempStr(putMiddle(putMiddle(myStr(""), ' ', width - 2), line, width));
-    outputTempStr(putMiddle(putMiddle(myStr(""), line, width - 2), point, width));
-}
-/*
-void add_edge(char line, char point, int width, ...)
-{
-    
-}
-*/
-void page_auth()
-{
-    char c = '#';
-    changePage_silent();
-    edge_up(c, c, DEFAULT_TERMINAL_WIDTH);
-    edge_body(myStr("Log in"), c, DEFAULT_TERMINAL_WIDTH);
-    edge_down(c, c, DEFAULT_TERMINAL_WIDTH);
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Show list",
+	     NULL);
 }
 
-void page_rec_com()
+void page_new_change(void)
 {
-    char c = '#';
-    edge_up(c, c, DEFAULT_TERMINAL_WIDTH);
-    edge_body(myStr("1. Show storage"), c, DEFAULT_TERMINAL_WIDTH);
-    edge_body(myStr("2. New item /"), c, DEFAULT_TERMINAL_WIDTH);
-    edge_body(myStr("Change remaining"), c, DEFAULT_TERMINAL_WIDTH);
-    edge_body(myStr("3. Delete item"), c, DEFAULT_TERMINAL_WIDTH);  
-    edge_body(myStr("4. Search item"), c, DEFAULT_TERMINAL_WIDTH);
-    edge_body(myStr("5. Purchase item"), c, DEFAULT_TERMINAL_WIDTH);
-    edge_body(myStr("6. Account & Exit"), c, DEFAULT_TERMINAL_WIDTH);
-    edge_down(c, c, DEFAULT_TERMINAL_WIDTH);
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Create new item / Manually change storage",
+	     NULL);
 }
+
+void page_wrong_name(void)
+{
+    add_edge('+', '+', DEFAULT_TERMINAL_WIDTH,
+	     "Wrong name",
+	     NULL);
+}
+
+void page_change(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Manually change storage",
+	     NULL);
+}
+
+void page_new_item(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Create new item",
+	     NULL);
+}
+
+void page_delete(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Delete item",
+	     NULL);
+}
+
+void page_search(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Search item",
+	     NULL);
+}
+
+void page_purchase(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Purchase",
+	     NULL);
+}
+
+void page_wrong_command(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Invalid command!",
+	     NULL);
+}
+
+void page_sum(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Sum expense",
+	     NULL);
+}
+
+void page_exit(void)
+{
+    add_edge('#', '#', DEFAULT_TERMINAL_WIDTH,
+	     "Exit",
+	     NULL);
+}
+
+#endif

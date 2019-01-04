@@ -5,6 +5,9 @@
 #define DEFAULT_TERMINAL_WIDTH 80
 #define DEFAULT_TERMINAL_HEIGHT 60
 
+#define CLEAR_SCREEN "clear"
+//#define CLEAR_SCREEN "cls"
+
 typedef struct item_info{  				   
     char name[NAMELEN];	   				   
     int price100;	   				   

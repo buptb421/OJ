@@ -8,6 +8,21 @@
 #include"clerkClient.h"
 #include"database.c"
 
+void debugname(item *pi)
+{
+    char *c = pi->name;
+    printf("[");
+    for(int i = 0; i < NAMELEN; i++)
+    {
+	if(*c <= 32)
+	  printf("[%d]", *c);
+	else
+	    printf("%c", *c);
+	c++;
+    }
+    printf("]");
+}
+
 void absorbBlanc(void)
 {
     char a;
@@ -23,12 +38,12 @@ void changePage(void)
     
     absorbBlanc();
     
-    system("clear");
+    system(CLEAR_SCREEN);
 }
 
 void changePage_silent(void)
 {
-    system("clear");
+    system(CLEAR_SCREEN);
 }
 
 char *constructStr(int n)
@@ -110,7 +125,7 @@ void vsnpItem(char *s, int len, ...)
 {
     va_list argum;
     va_start (argum, len);
-    vsnprintf(s, len, "%5d%15s%20.2lf%20d", argum);
+    vsnprintf(s, len, "%-5d%15s%20.2lf%20d", argum);
     va_end(argum);
 }
 
@@ -166,31 +181,153 @@ char *putMiddle(char *s, char c, int desLen)
     return news;
 }
 
-void showItem(int count, item *head)
+char *tranItem(int count, item *head)
 {
     if(head != NULL)
     {
-	outputTempStr(itemchart(count, head));
+	return itemchart(count, head);
     }
     else
+    {
 	printf("Try to show void item.\n");
+	return NULL;
+    }
+}
+
+void showItem(int count, item *head)
+{
+    char *ts = tranItem(count, head);
+    if(ts != NULL)
+    {
+	outputTempStr(ts);
+	destroyStr(ts);
+    }
+}
+
+void edge_up(char line, char point, int width)
+{
+    outputTempStr(
+	putMiddle(
+	    putMiddle(
+		putMiddle(
+		    myStr(""),
+		    line, width - 2),
+		point, width),
+	    ' ', DEFAULT_TERMINAL_WIDTH)
+	);
+    
+    outputTempStr(
+	putMiddle(
+	    putMiddle(
+		putMiddle(
+		    myStr(""),
+		    ' ', width - 2),
+		line, width),
+	    ' ', DEFAULT_TERMINAL_WIDTH)
+	);
+}
+
+void edge_body(char *s, char line, int width)// s should be temp string.
+{
+    outputTempStr(
+	putMiddle(
+	    putMiddle(
+		putMiddle(
+		    s,
+		    ' ', width - 2),
+		line, width),
+	    ' ', DEFAULT_TERMINAL_WIDTH)
+	    );
+}
+
+void edge_down(char line, char point, int width)
+{
+    outputTempStr(
+	putMiddle(
+	    putMiddle(
+		putMiddle(
+		    myStr(""),
+		    ' ', width - 2),
+		line, width),
+	    ' ', DEFAULT_TERMINAL_WIDTH)
+	);
+
+   outputTempStr(
+	putMiddle(
+	    putMiddle(
+		putMiddle(
+		    myStr(""),
+		    line, width - 2),
+		point, width),
+	    ' ', DEFAULT_TERMINAL_WIDTH)
+	);
+}
+
+void add_edge(char line, char point, int width, char *str1,...)// Will not free what has been transferred in.
+{
+    va_list str;
+
+    char *s = str1;
+
+    va_start(str, str1);
+    edge_up(line, point, width);
+    while(s != NULL)
+    {
+	edge_body(myStr(s), line, width);
+	s = va_arg(str, char*);
+    }
+    edge_down(line, point, width);
+    
+    va_end(str);
 }
 
 int showList(item *head)
 {
     int count = 0;
-    if(head != NULL)
+    if(head == NULL)
+    {
+	printf("There is no list.\n");
+    }
+    else
     {
 	head = head->next;
-	while(head != NULL)
+	if(head == NULL)
+	    printf("Empty list!");
+	else
 	{
-	    count++;
-	    showItem(count, head);
-	    head = head->next;
+	    edge_up('=', '+', DEFAULT_TERMINAL_WIDTH - 6);
+	    edge_body(myStr("    ID           Item code             Price       Remaining number"), '=', DEFAULT_TERMINAL_WIDTH - 6);
+	    edge_body(myStr("-------------------------------------------------------------------"), '=', DEFAULT_TERMINAL_WIDTH - 6);
+	    while(head != NULL)
+	    {
+		count++;
+		edge_body(tranItem(count, head), '=', DEFAULT_TERMINAL_WIDTH - 6);
+		head = head->next;
+	    }
+	    edge_down('=', '+', DEFAULT_TERMINAL_WIDTH - 6);
 	}
     }
     return count;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void askCommand(int *pcommand)
 {
@@ -232,7 +369,7 @@ void askPrice(int *pri)
 
 void askPurchaseNum(int *pur)
 {
-    printf("Please enter the number of purchase.\n");
+    printf("Please enter the number of purchase.\nNumber of price :");
     scanf("%d", pur);
 
     absorbBlanc();
