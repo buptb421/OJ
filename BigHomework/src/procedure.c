@@ -1,9 +1,6 @@
-#include<stdio.h>
+#include"procedure.h"
 
-#include"clerkClient.h"
-#include"database.c"
-#include"interface.c"
-#include"page.c"
+#include<stdio.h>
 
 void backstage_insert_item(item *pPos, item *pNew)
 {
@@ -25,6 +22,45 @@ void backstage_destroy_list(item *head)
     destroyList(head);
 }
 
+void interact_name_item(item *pi)
+{   
+    char *s = pi->name;
+
+    printf("\n    Please enter the name of the item.\n    Item name :");
+    scanf("%c", s);
+    
+    for(int i = 1; i < NAMELEN && *s != '\n' && *s != '\0'; i++)
+    {
+		s++;
+		scanf("%c", s);
+    }
+    if(*s != '\n' && *s != '\0')
+    	absorbBlanc();
+    else
+    	*s = '\0';
+
+	s = pi->name;
+    if(*s == '\0')
+    {
+		printf("\nInvalid input!\n");
+		
+		changePage();
+    }
+    else
+    {   
+    	changePage_silent();
+	}
+}
+
+void interact_n_found(item *pi)
+{
+	printf("\n    The item :\n      ");
+    outputTempStr(dealName(pi->name));
+    printf("    does not exist.\n");
+    
+    changePage();
+}
+
 void procedure_authentication(int *is_auth)
 {
     *is_auth = 0;
@@ -36,7 +72,7 @@ void procedure_authentication(int *is_auth)
 	
     printf("\n    Please enter password.\n");
     
-    for(int try = 0; try < 3 && *is_auth == 0; try++)
+    for(int tr = 0; tr < 3 && *is_auth == 0; tr++)
     {
 		printf("    PassWord :");
 		scanf("%s", a);
@@ -74,7 +110,7 @@ void procedure_welcome(void)
     changePage();
 }
 
-void procedure_fail_init()
+void procedure_fail_init(void)
 {
 	page_fail_init();
 	
@@ -103,37 +139,8 @@ void procedure_show_list(item *head)
     changePage();
 }
 
-void procedure_name_item(item *pi)
-{   
-    char *s = pi->name;
 
-    printf("\n    Please enter the name of the item.\n    Item name :");
-    scanf("%c", s);
-    
-    for(int i = 1; i < NAMELEN && *s != '\n' && *s != '\0'; i++)
-    {
-		s++;
-		scanf("%c", s);
-    }
-    if(*s != '\n' && *s != '\0')
-    	absorbBlanc();
-    else
-    	*s = '\0';
-
-	s = pi->name;
-    if(*s == '\0')
-    {
-		printf("\nInvalid input!\n");
-		
-		changePage();
-    }
-    else
-    {   
-    	changePage_silent();
-	}
-}
-
-void procedure_wrong_name()
+void procedure_wrong_name(void)
 {
 	page_wrong_name();
 	
@@ -229,14 +236,7 @@ void procedure_delete_item(item *pi)
     changePage();
 }
 
-void procedure_n_found(item *pi)
-{
-	printf("\n    The item :\n      ");
-    outputTempStr(dealName(pi->name));
-    printf("    does not exist.\n");
-    
-    changePage();
-}
+
 
 void procedure_found_item(item *pi)
 {
@@ -289,7 +289,7 @@ void procedure_wrong_command(int command)
 void procedure_sum_expense(int sumExpense)
 {
    	page_sum();
-    printf("\n    The total expense is %.2lf Yuan.", tranPrice(sumExpense));
+    printf("\n    The total expense is %.2lf Yuan.\n", tranPrice(sumExpense));
     
     changePage();
 }
@@ -297,5 +297,7 @@ void procedure_sum_expense(int sumExpense)
 void procedure_exit(void)
 {
 	page_exit();
+	
     changePage();
 }
+

@@ -1,11 +1,8 @@
-#ifndef _DATABASE_C
-#define _DATABASE_C
+#include"database.h"
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-
-#include"clerkClient.h"
 
 int is_valid_name(char *s)
 {
@@ -53,7 +50,7 @@ item *initList(void)
     return tpi;
 }
 
-void destroyItem(item *pi) // Dangerous! Use with a second concern.
+void destroyItem(item *pi)// Dangerous! Use with a second concern.
 {
     if(pi != NULL)
 	free(pi);
@@ -142,6 +139,3 @@ void insertItem(item *insertPos, item *newItem)// Insert newItem after insertPos
     }
 }
 
-
-
-#endif

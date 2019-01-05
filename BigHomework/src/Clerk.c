@@ -1,18 +1,6 @@
-#include<stdio.h>
+#include"Clerk.h"
+
 #include<stdlib.h>
-#include<string.h>
-
-#include"clerkClient.h"
-#include"database.c"
-#include"interface.c"
-#include"procedure.c"
-#include"page.c"
-
-void backstage_insert_item(item *pPos, item *pNew);
-void backstage_new_item(item **ppi);
-void backstage_destroy_item(item *pi);
-void backstage_destroy_list(item *head);
-
 
 int main()
 {
@@ -51,7 +39,7 @@ int main()
 					page_new_change();
 					
 		    		backstage_new_item(&tpi);
-		    		procedure_name_item(tpi);
+		    		interact_name_item(tpi);
 		    		
 		    		if(!is_valid_name(tpi->name))
 		    		{
@@ -79,7 +67,7 @@ int main()
 					page_delete();
 					
 		    		backstage_new_item(&tpi);
-		    		procedure_name_item(tpi);
+		    		interact_name_item(tpi);
 		    		if(!is_valid_name(tpi->name))
 		    		{
 						procedure_wrong_name();
@@ -95,7 +83,7 @@ int main()
 						{
 							page_delete();
 							
-			    			procedure_n_found(tpi);
+			    			interact_n_found(tpi);
 						}
 		    		}
 		    		backstage_destroy_item(tpi);
@@ -105,7 +93,7 @@ int main()
 					page_search();
 					
 		    		backstage_new_item(&tpi);
-		    		procedure_name_item(tpi);
+		    		interact_name_item(tpi);
 		    		if(!is_valid_name(tpi->name))
 		    		{
 						procedure_wrong_name();
@@ -122,7 +110,7 @@ int main()
 						{
 							page_search();
 							
-			    			procedure_n_found(tpi);
+			    			interact_n_found(tpi);
 						}
 		    		}
 		    		backstage_destroy_item(tpi);
@@ -132,7 +120,7 @@ int main()
 					page_purchase();
 					
 		    		backstage_new_item(&tpi);
-		    		procedure_name_item(tpi);
+		    		interact_name_item(tpi);
 		    		if(!is_valid_name(tpi->name))
 		    		{
 						procedure_wrong_name();
@@ -148,7 +136,7 @@ int main()
 						else
 						{
 							page_purchase();
-			    			procedure_n_found(tpi);
+			    			interact_n_found(tpi);
 						}
 		    		}
 		    		backstage_destroy_item(tpi);

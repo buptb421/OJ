@@ -1,12 +1,9 @@
-#ifndef _INTERFACE_C
-#define _INTERFACE_C
+#include"interface.h"
 
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 #include<stdarg.h>
-
-#include"clerkClient.h"
-#include"database.c"
 
 void debugname(item *pi)
 {
@@ -65,7 +62,7 @@ void outputTempStr(char *s)
     destroyStr(s);
 }
 
-char *dealName(char *s)
+char *dealName(char *s)// Need to be destoried later
 {
     char *ns, *tp;
     ns = constructStr(NAMELEN + 1);
@@ -82,7 +79,7 @@ char *dealName(char *s)
     }
     
     return ns;
-}// Need to be destoried later
+}
 
 
 void showName(item *p)
@@ -98,15 +95,14 @@ double tranPrice(int price100)
     return lf;
 }
 
-char *myStr(char *const s)
+char *myStr(const char *r)// Need to be destroied later
 {
-    char *r, *w;
+    char *w;
     char *ns;
     ns = constructStr(NAMELEN + 1);
 
     if(ns != NULL)
     {
-	r = s;
 	w = ns;
 	
 	while(*r != '\0')
@@ -119,13 +115,13 @@ char *myStr(char *const s)
     }
     
     return ns;
-}// Need to be destroied later
+}
 
 void vsnpItem(char *s, int len, ...)
 {
     va_list argum;
     va_start (argum, len);
-    vsnprintf(s, len, "%-5d%15s%20.2lf%20d", argum);
+    vsnprintf(s, len, "%-5d%15s%20.2lf%20d\0", argum);
     va_end(argum);
 }
 
@@ -149,36 +145,37 @@ char *putMiddle(char *s, char c, int desLen)
     int len = strlen(s);
     char *news, *ts, *r;
     if(len >= desLen)
-	desLen = len;
-
-    news = constructStr(desLen + 1);
-    if(news != NULL)
     {
-	ts = news;
-	for(int i = 0; i < (desLen - len) / 2; i++)
-	{
-	    *ts = c;
-	    ts++;
+    	return s;
 	}
-	
-	r = s;
-	for(int i = 0; i < len; i++)
+	else
 	{
-	    *ts = *r;
-	    ts++;
-	    r++;
-	}
-	
-	for(int i = 0; i < (desLen - len + 1) / 2; i++)
-	{
-	    *ts = c;
-	    ts++;
-	}
-	*ts = '\0';
-	
-	destroyStr(s);
+    	news = constructStr(desLen + 1);
+   		if(news != NULL)
+    	{
+			ts = news;
+			for(int i = 0; i < (desLen - len) / 2; i++)
+			{
+			    *ts = c;
+			    ts++;
+			}	
+			r = s;
+			for(int i = 0; i < len; i++)
+			{
+	  			*ts = *r;
+				ts++;
+				r++;
+			}
+			for(int i = 0; i < (desLen - len + 1) / 2; i++)
+			{
+			    *ts = c;
+			    ts++;
+			}
+			*ts = '\0';
+			destroyStr(s);
+   		}
+    	return news;
     }
-    return news;
 }
 
 char *tranItem(int count, item *head)
@@ -206,21 +203,18 @@ void showItem(int count, item *head)
 
 void edge_up(char line, char point, int width)
 {
-    outputTempStr(
-	putMiddle(
-	    putMiddle(
-		putMiddle(
-		    myStr(""),
-		    line, width - 2),
-		point, width),
-	    ' ', DEFAULT_TERMINAL_WIDTH)
-	);
+	for(int i = 0; i < (DEFAULT_TERMINAL_WIDTH - width) / 2; i++)
+		printf(" ");
+	printf("%c", point);
+	for(int i = 0; i < width - 2; i++)
+		printf("%c", line);
+	printf("%c\n", point);
     
     outputTempStr(
 	putMiddle(
 	    putMiddle(
 		putMiddle(
-		    myStr(""),
+		    myStr("  "),
 		    ' ', width - 2),
 		line, width),
 	    ' ', DEFAULT_TERMINAL_WIDTH)
@@ -243,27 +237,24 @@ void edge_body(char *s, char line, int width)// s should be temp string.
 void edge_down(char line, char point, int width)
 {
     outputTempStr(
-	putMiddle(
-	    putMiddle(
 		putMiddle(
-		    myStr(""),
-		    ' ', width - 2),
-		line, width),
-	    ' ', DEFAULT_TERMINAL_WIDTH)
+	    	putMiddle(
+				putMiddle(
+		    		myStr("  "),
+		    		' ', width - 2),
+				line, width),
+	    	' ', DEFAULT_TERMINAL_WIDTH)
 	);
 
-    outputTempStr(
-	putMiddle(
-	    putMiddle(
-		putMiddle(
-		    myStr(""),
-		    line, width - 2),
-		point, width),
-	    ' ', DEFAULT_TERMINAL_WIDTH)
-	);
+	for(int i = 0; i < (DEFAULT_TERMINAL_WIDTH - width) / 2; i++)
+		printf(" ");
+	printf("%c", point);
+	for(int i = 0; i < width - 2; i++)
+		printf("%c", line);
+	printf("%c\n", point);
 }
 
-void add_edge(char line, char point, int width, char *str1,...)// Will not free what has been transferred in.
+void add_edge(char line, char point, int width, char *str1, ...)// Will free what has been transferred in.
 {
     va_list str;
 
@@ -273,8 +264,8 @@ void add_edge(char line, char point, int width, char *str1,...)// Will not free 
     edge_up(line, point, width);
     while(s != NULL)
     {
-	edge_body(myStr(s), line, width);
-	s = va_arg(str, char*);
+		edge_body(s, line, width);
+		s = va_arg(str, char*);
     }
     edge_down(line, point, width);
     
@@ -310,4 +301,3 @@ int showList(item *head)
     return count;
 }
 
-#endif

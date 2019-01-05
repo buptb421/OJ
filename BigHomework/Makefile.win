@@ -1,0 +1,40 @@
+# Project: TermProject
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
+WINDRES  = windres.exe
+OBJ      = src/Clerk.o src/database.o src/interface.o src/page.o src/procedure.o
+LINKOBJ  = src/Clerk.o src/database.o src/interface.o src/page.o src/procedure.o
+LIBS     = -L"D:/Program Files/Dev-Cpp/MinGW64/lib" -L"D:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -std=c11 -g3
+INCS     = -I"D:/Program Files/Dev-Cpp/MinGW64/include" -I"D:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"D:/Program Files/Dev-Cpp/MinGW64/include" -I"D:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"D:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = TermProject.exe
+CXXFLAGS = $(CXXINCS) -g3
+CFLAGS   = $(INCS) -g3
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+src/Clerk.o: src/Clerk.c
+	$(CPP) -c src/Clerk.c -o src/Clerk.o $(CXXFLAGS)
+
+src/database.o: src/database.c
+	$(CPP) -c src/database.c -o src/database.o $(CXXFLAGS)
+
+src/interface.o: src/interface.c
+	$(CPP) -c src/interface.c -o src/interface.o $(CXXFLAGS)
+
+src/page.o: src/page.c
+	$(CPP) -c src/page.c -o src/page.o $(CXXFLAGS)
+
+src/procedure.o: src/procedure.c
+	$(CPP) -c src/procedure.c -o src/procedure.o $(CXXFLAGS)
