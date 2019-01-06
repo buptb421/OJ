@@ -6,9 +6,12 @@
 #define NAMELEN 6	   				   
 #define DEFAULT_TERMINAL_WIDTH 80
 #define DEFAULT_TERMINAL_HEIGHT 60
+#define BUF_LINE 20
 
 #define CLEAR_SCREEN "clear"
 //#define CLEAR_SCREEN "cls"
+
+#define PASSWORD "000000"
 
 typedef struct item_info{  				   
     char name[NAMELEN];	   				   
@@ -17,36 +20,19 @@ typedef struct item_info{
     struct item_info *next;				   
 }item;
 
-//------ Special, line buffer.
-#define BUF_LINE 20
+// Special, line buffer.----------------------------------\|
 char *cline[BUF_LINE];
-//int lock[BUF_LINE];
+int lock[BUF_LINE];
 int ml = 0;
+int depth = 0;
 
-void initLine(void)
-{
-    for(int i = 0; i < BUF_LINE; i++)
-	cline[i] = (char*)malloc(sizeof(char) * (DEFAULT_TERMINAL_WIDTH + 1));
-}
+void initLine(void);
+void destroyLine(void);
+void debug_buffer(void);
+//--------------------------------------------------------/|
 
-void destroyLine(void)
-{
-    for(int i = 0; i < BUF_LINE; i++)
-	free(cline[i]);
-}
 
-void debug_buffer(void)
-{
-    for(int i = 0; i < BUF_LINE; i++)
-    {
-	for(int j = 0; j < DEFAULT_TERMINAL_WIDTH + 1; j++)
-	    printf("%c", cline[i][j]);
-	printf("[line]\n");
-    }
-    printf("[end][%d]\n", ml);
-}
-//------
-
+// Link list & algorithm.---------------------------------\|
 int is_valid_name(char *s);
 void addRemain(item *p, int r);
 item *constructItem(void);
@@ -61,32 +47,33 @@ int isExist(item *pos, item *newItem);
 int isPart(item *pi, item *pi1);
 void insertItem(item *insertPos, item *newItem);// Insert newItem after insertPos.
 void namePlus(item *pi, int n);
-
 void debugName(item *pi);
+//--------------------------------------------------------/|
 
+//--------------------------------------------------------\|
 void absorbBlanc(void);
 void changePage(void);
 void changePage_silent(void);
-
-char *constructStr(int n);
-void destroyStr(char *s);
-void outputTempStr(char *s);
-
-char *dealName(char *s);// Need to be destoried later
-void showName(item *p);
 double tranPrice(int price100);
-char *myStr(const char *const s);// Need to be destroied later
-void vsnpItem(char *s, int len, ...);
-char *itemchart(int count, item *pi);
-char *putMiddle(char *s, char c, int desLen);
-char *tranItem(int count, item *head);
-void showItem(int count, item *head);
 
+char *constructStr(void);
+void destroyStr(char *s);
+void outputTempStr(char *s);// temp in, free
+char *dealName(char *s);// const in, temp out
+void showName(item *p);
+char *myStr(const char *s);// const in, temp out
+void vsnpItem(char *s, int len, ...);
+char *itemchart(int count, item *pi);// temp out
+char *putMiddle(char *s, char c, int desLen);// temp in, temp out
+char *tranItem(int count, item *head);// temp out
+void showItem(int count, item *head);
 void edge_up(char line, char point, int width);
-void edge_body(char *s, char line, int width);// s should be temp string.
+void edge_body(char *s, char line, int width);// temp in
 void edge_down(char line, char point, int width);
 int showList(item *head);
+//--------------------------------------------------------/|
 
+// interact.----------------------------------------------\|
 void page_auth(void);
 void page_fail_init(void);
 void page_rec_com(void);
@@ -125,6 +112,7 @@ void procedure_purchase_item(item *pi, int *sumExpense);
 void procedure_wrong_command(int command);
 void procedure_sum_expense(int sumExpense);
 void procedure_exit(void);
+//--------------------------------------------------------/|
 
 int main()
 {
@@ -279,6 +267,37 @@ int main()
     }
 }
 
+void initLine(void)
+{
+    for(int i = 0; i < BUF_LINE; i++)
+	cline[i] = (char*)malloc(sizeof(char) * (DEFAULT_TERMINAL_WIDTH + 1));
+
+    for(int i = 0; i < BUF_LINE; i++)
+	lock[i] = 0;
+}
+
+void destroyLine(void)
+{
+    for(int i = 0; i < BUF_LINE; i++)
+	free(cline[i]);
+}
+
+void debug_buffer(void)
+{
+    for(int i = 0; i < BUF_LINE; i++)
+    {
+	for(int j = 0; j < DEFAULT_TERMINAL_WIDTH + 1; j++)
+	{
+	    if(cline[i][j] <= 32)
+		printf("[%d]", cline[i][j]);
+	    else
+		printf("%c", cline[i][j]);
+	}
+	printf("[line][%d]\n", lock[i]);
+    }
+    printf("[end][%d]\n", ml);
+}
+
 int is_valid_name(char *s)
 {
     return *s != '\0';
@@ -328,7 +347,12 @@ item *initList(void)
 void destroyItem(item *pi)// Dangerous! Use with a second concern.
 {
     if(pi != NULL)
-	free(pi);   
+	free(pi);
+    else
+    {
+	printf("Try to free void pointer.\n");
+	changePage();
+    }
 }
 
 void deleteItem(item *pi)// Actually this will delete the item after *pi and return the address of the next next item(*pi->next->next).
@@ -338,7 +362,7 @@ void deleteItem(item *pi)// Actually this will delete the item after *pi and ret
 	item *tobeDeleted = pi->next;
 	if(tobeDeleted != NULL)
 	    pi->next = tobeDeleted->next;
-	free(tobeDeleted);
+	destroyItem(tobeDeleted);
     }
 }
 
@@ -483,30 +507,37 @@ void changePage_silent(void)
     system(CLEAR_SCREEN);
 }
 
-char *constructStr(int n)
+char *constructStr(void)
 {
     char *ts;
-    if(ml < BUF_LINE)
+    if(depth <= BUF_LINE)
     {
-	ts = cline[ml];
-	ml = ml + 1;
-	return ts;
+	if(ml < BUF_LINE)
+	{
+	    lock[ml] = lock[ml] + 1;
+	    ts = cline[ml];
+	    ml = ml + 1;
+	    depth = depth + 1;
+	    return ts;
+	}
+	else
+	{
+	    ml = 0;
+	    return constructStr();
+	}
     }
     else
     {
-	ml = 0;
-	return constructStr(0);
+	debug_buffer();
+	printf("Line buffer not enough.\n");
+	changePage();
+	return NULL;
     }
 }
 
 void destroyStr(char *s)
 {
-    /*
-    if(s != NULL)
-	free(s);
-    else
-	printf("Try to clear void string.\n");
-    */
+    depth = depth - 1;
 }
 
 void outputTempStr(char *s)
@@ -515,10 +546,10 @@ void outputTempStr(char *s)
     destroyStr(s);
 }
 
-char *dealName(char *s)// Need to be destoried later
+char *dealName(char *s)
 {
     char *ns, *tp;
-    ns = constructStr(NAMELEN + 1);
+    ns = constructStr();
     if(ns != NULL)
     {
 	tp = ns;
@@ -548,11 +579,11 @@ double tranPrice(int price100)
     return lf;
 }
 
-char *myStr(const char *r)// Need to be destroied later
+char *myStr(const char *r)
 {
     char *w;
     char *ns;
-    ns = constructStr(NAMELEN + 1);
+    ns = constructStr();
 
     if(ns != NULL)
     {
@@ -580,7 +611,7 @@ void vsnpItem(char *s, int len, ...)
 
 char *itemchart(int count, item *pi)
 {
-    char *s = constructStr(DEFAULT_TERMINAL_WIDTH + 1);
+    char *s = constructStr();
     if(s != NULL)
     {
 	char *pName = dealName(pi->name);
@@ -603,7 +634,7 @@ char *putMiddle(char *s, char c, int desLen)
     }
     else
     {
-    	news = constructStr(desLen + 1);
+    	news = constructStr();
 	if(news != NULL)
     	{
 	    ts = news;
@@ -670,7 +701,7 @@ void edge_up(char line, char point, int width)
     printf("%c\n", line);
 }
 
-void edge_body(char *s, char line, int width)// s should be temp string.
+void edge_body(char *s, char line, int width)
 {
     outputTempStr(
 	putMiddle(
@@ -715,8 +746,8 @@ int showList(item *head)
 	else
 	{
 	    edge_up('=', '+', DEFAULT_TERMINAL_WIDTH - 6);
-	    edge_body(myStr("    ID           Item code             Price       Remaining number     "), '=', DEFAULT_TERMINAL_WIDTH - 6);
-	    edge_body(myStr("------------------------------------------------------------------------"), '=', DEFAULT_TERMINAL_WIDTH - 6);
+	    edge_body(myStr("  ID           Item code             Price       Remaining number   "), '=', DEFAULT_TERMINAL_WIDTH - 6);
+	    edge_body(myStr("--------------------------------------------------------------------"), '=', DEFAULT_TERMINAL_WIDTH - 6);
 	    while(head != NULL)
 	    {
 		count++;
@@ -896,7 +927,7 @@ void procedure_authentication(int *is_auth)
 {
     *is_auth = 0;
     int i;
-    char a[7], passw[] = "000000", *p, *q;
+    char a[7], passw[] = PASSWORD, *p, *q;
     
     changePage_silent();
     page_auth();
