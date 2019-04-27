@@ -1,49 +1,5 @@
-/*
-  This program can be improved as long as you use a technique called a "function pointer".  
- */ 
-
 #include<stdio.h>
 
-void inputStr(char str[], const int buffer_length); 
-/*
-void outputStr(char str[], const int buffer_length);
-void outputStrArr(char divided[][60], const char sep, const int wordN);
-
-int divide(char ori[], const int bl_ori, char div[][60]);
-
-void copyWord_to(char ori[], char cop[], const int buffer_length);
-void reverseSent(char div[][60], const int wordN, char rev[][60]);
-
-void reverseWord_self(char str[], const int buffer_length);
-void reverseAllWord(char str[][60], const int wordN);
-*/
- 
-void f(char str[], int i)
-{
-	if(str[i] == '\0')
-	{
-		f(str, i + 1);
-		printf("%c", str[i]);
-	}	
-}
-
-void g(char str[], int i)
-{
-	
-} 
- 
-int main()
-{
-    char ori[300];
-    
-    printf("Input:");
-    inputStr(ori, 300);
-    
-	
-    
-    return 0;
-}
- 
 void inputStr(char str[], const int buffer_length)
 {
     int i;
@@ -54,85 +10,92 @@ void inputStr(char str[], const int buffer_length)
     if(i < buffer_length)
 	str[i - 1] = '\0';
 }
-/*
-void outputStr(char str[], const int buffer_length)
+
+int isEdge(char str[], int i)
 {
-    int i;
-    for(i = 0; i < buffer_length && str[i] != '\0'; i++)
-    {
-	printf("%c", str[i]);
-    }
+	if(i < 0 or str[i] == '\0')
+		return 1;
+	else
+		return 0;
 }
 
-void outputStrArr(char divided[][60], const char sep, const int wordN)
+int isSep(char str[], int i)
 {
-    int i;
-    for(i = 0; i < wordN; i++)
-    {
-	outputStr(divided[i], 60);
-	if(i < wordN - 1)
-	    printf("%c", sep);
-    }
-    printf("\n");
+	if(str[i] == ' ')
+		return 1;
+	else
+		return 0;
 }
 
-int divide(char ori[], const int bl_ori, char div[][60])
+int reachEnd(char str[])
 {
-    int i, j, wordN;
-    for(i = 0, j = 0, wordN = 0; i < bl_ori && (ori[i - 1] != '\0' || i == 0); i++)
-    {
-	if(i > 0 && ori[i - 1] == ' ')
+	int i = 0;
+	while(str[i] != '\0')
 	{
-	    div[wordN][j - 1] = '\0';
-	    wordN++;
-	    j = 0;
+		i++;	
 	}
-	if(j < 60)
+	return i - 1;	
+} 
+
+int readWord(char str[], int i, int step)
+{
+	int j;
+	for(j = i; !isEdge(str, j) && !isSep(str, j); j = j + step)
+		printf("%c", str[j]);
+	
+	return j;
+}
+
+int readSent(char str[], int i, int s_step, int w_step)
+{
+	int j;
+	if(s_step * w_step > 0)
 	{
-	    div[wordN][j] = ori[i];
-	    j++;
+		for(j = i; !isEdge(str, j); j = j + s_step)
+		{
+			if(!isSep(str, j))
+			{
+				j = readWord(str, j, w_step);
+				printf(" ");
+			}
+		}
+		printf("\n");
 	}
-    }
-    return wordN + 1;
+	else
+	{
+		int sep_handler;
+		for(j = i; !isEdge(str, j); j = j + s_step)
+		{
+			if(isSep(str, j))
+			{
+				if(sep_handler == 0)
+				{
+					sep_handler = 1;
+					readWord(str, j - s_step, w_step);
+					printf(" ");
+				}
+			}
+			else
+				sep_handler = 0;
+		}
+		readWord(str, j - s_step, w_step);
+		printf("\n");
+	}
 }
 
-void copyWord_to(char ori[], char cop[], const int buffer_length)
+int main()
 {
-    int i;
-    for(i = 0; i < buffer_length && (ori[i - 1] != '\0' || i == 0); i++)
-    {
-	cop[i] = ori[i];
-    }
+    char ori[300];
+    
+    printf("Input:");
+    inputStr(ori, 300);
+    
+	readSent(ori, 0, 1, 1);
+	readSent(ori, 0, 1, -1);
+	readSent(ori, reachEnd(ori), -1, 1);
+    readSent(ori, reachEnd(ori), -1, -1);
+    
+    return 0;
 }
+ 
 
-void reverseSent(char div[][60], const int wordN, char rev[][60])
-{
-    int i;
-    for(i = 0; i < wordN; i++)
-    {
-	copyWord_to(div[i], rev[wordN - 1 - i], 60);
-    }
-}
-
-void reverseWord_self(char str[], const int buffer_length)
-{
-    int len, i;
-    char temp;
-    for(len = 0; len < buffer_length && str[len] != '\0'; len++);
-    for(i = 0; i < len / 2; i++)
-    {
-	temp = str[i];
-	str[i] = str[len - i - 1];
-	str[len - i - 1] = temp;
-    }
-}
-
-void reverseAllWord(char str[][60], const int wordN)
-{
-    int i;
-    for(i = 0; i < wordN; i++)
-    {
-	reverseWord_self(str[i], 60);
-    }
-}
-*/ 
