@@ -50,9 +50,13 @@ int getPiece(int n, int a[], int PieceStart, int &PieceEnd) //return the sum of 
     }
 }
 
-int mergePiece(int n, int a[], int p1_s, int p1_e, int p1_sum, )
+int mergePiece(i/nt n, int a[], int now)
 {
+
     if(abs())
+    {
+
+    }
 }
 
 void process(int n, int a[])
