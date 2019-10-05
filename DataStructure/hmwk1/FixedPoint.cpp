@@ -4,6 +4,19 @@
 
 using namespace std;
 
+int getArray(int a[])
+{
+    int n;
+    cout << "Please enter the length of the array, the number should be a nature number below" << LENGTH  << '.' << endl;
+    cin >> n;
+    cout << "Please input Array of " << n << " integers." << endl;
+    for(int i = 0; i < 100 && i < n; i++)
+    {
+        cin >> a[i];
+    }
+    return n;
+}
+
 int findFixPoint(int a[], int s, int e)
 {
 	int mid = (e - s) / 2;
@@ -39,12 +52,19 @@ int main()
 {
 	int n;
 	int a[LENGTH];
+	int fixPoint;
 
-	cin >> n;
-	for (int i = 0; i < n; i++)
+	n = getArray(a);
+	fixPoint = findFixPoint(a, 0, n);
+
+	if(fixPoint) // 0 : there is no such fix point, 1~n : the fix point is this.
 	{
-		cin >> a[i];
+		cout << "The fix point is " << fixPoint << '.' << endl; 
 	}
-	cout << findFixPoint(a, 0, n); // 0 : there is no such fix point, 1~n : the fix point is this.
+	else
+	{
+		cout << "There is no fix point." << endl;
+	}
+	
 	return 0;
 }

@@ -1,5 +1,6 @@
 #include<iostream>
 #include<iomanip>
+#include<cmath>
 
 #define NUM_WIDTH 4
 #define LENGTH 100
@@ -12,6 +13,12 @@ typedef struct function{
     int sum;
 }piece;
 
+typedef struct PieceTree{
+    piece p;
+    struct PieceTree *left;
+    struct PieceTree *right;
+} pt;
+
 piece setPiece(int s, int e, int sum)
 {
     piece p;
@@ -23,7 +30,7 @@ piece setPiece(int s, int e, int sum)
 
 bool isPieceRight(piece p)
 {
-    if(piece.e >= piece.s)
+    if(p.e >= p.s)
     {
         return true;
     }
@@ -55,12 +62,17 @@ int getPieceSum(int a[], int start, int end)
 
 void DisplayPieceSumMatrix(int n, int a[])
 {
-    int temp[100][100]; 
+    int temp[100][100];
+    bool noneZero = true;
     for(int i = 0; i < n; i++)
     {
         for(int j = i; j < n; j++)
         {
             temp[i][j] = getPieceSum(a, i, j);
+            if(temp[i][j] == 0)
+            {
+                noneZero = false;
+            }
         }
     }
 
@@ -116,6 +128,10 @@ void DisplayPieceSumMatrix(int n, int a[])
             cout << setiosflags(ios::left) << setw(NUM_WIDTH)<< temp[i][j];
         }
         cout << endl; 
+    }
+    if(noneZero)
+    {
+        cout << "The array has no 0 sum continous subsequence." << endl;
     }
 }
 
@@ -257,41 +273,12 @@ void findLocalExtream(int n, int a[])
                 }
                 else if (p[i].sum < 0)
                 {
-                    /* code */
+                    
                 }
                 
             }
         }
         
         
-    }
-}
-
-piece getMergedPiece(int n, int a[], piece now) // When now > right
-{
-    if(now)
-}
-
-piece getMergablePiece(int n, int a[], piece now, piece right) // When now < right, notice there may not be a 'left' but <<<<<< all the way down, s.t. we still call 'now' 'now'
-{
-    piece left = setPiece(0, 0, 0);
-    if()
-}
-
-piece iter1(int n, int a[], piece now)
-{
-    if(now.s > 0)
-    {
-        piece proceed = getPiece(n, a, now.s - 1, -1);
-        if(abs(now.sum) )
-    }
-    
-}
-
-piece iter2(int n, int a[], piece mid, piece right)
-{
-    if(mid.s > 0)
-    {
-        piece left = getPiece(n, a, mid.s)
     }
 }
