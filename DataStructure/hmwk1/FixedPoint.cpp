@@ -17,7 +17,7 @@ int getArray(int a[])
     return n;
 }
 
-int findFixPoint(int a[], int s, int e)
+int findFixPoint(int a[], int s, int e) // It's a binary search, whose serach area is 1/2 of the former one, so that it's O(log(N)).  
 {
 	int mid = (e - s) / 2;
 	if (e - s > 1)

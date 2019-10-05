@@ -6,6 +6,7 @@
 using namespace std;
 
 #define STACK_INIT_SIZE 100
+#define nullptr NULL
 
 typedef struct stack_twin {
     ElemType *elem;
@@ -85,6 +86,14 @@ void DestroyStack(twStack &s)
     cout << "[stack destroyed]" << endl;
 }
 
+int OdnStackLength(twStack s)
+{
+    return s.odnTop;
+}
+int RevStackLength(twStack s)
+{
+    return s.stacksize - 1 - s.revTop;
+}
 int stackLength(twStack s, int chose)
 {
     if(chose == 1)
@@ -101,30 +110,7 @@ int stackLength(twStack s, int chose)
         return 0;
     }
 }
-int OdnStackLength(twStack s)
-{
-    return s.odnTop;
-}
-int RevStackLength(twStack s)
-{
-    return s.stacksize - 1 - s.revTop;
-}
 
-void GetTop(twStack s, int chose, ElemType &e)
-{
-    if(chose == 1)
-    {
-        GetOdnTop(s, e);
-    }
-    else if(chose == 2)
-    {
-        GetRevTop(s, e);
-    }
-    else
-    {
-        cout << "[Wrong stack code, do nothing]" << endl;
-    }
-}
 void GetOdnTop(twStack s, ElemType &e)
 {
     if(!isOdnStackEmpty(s))
@@ -149,22 +135,22 @@ void GetRevTop(twStack s, ElemType &e)
     }
     
 }
-
-void push(twStack &s, int chose, ElemType e)
+void GetTop(twStack s, int chose, ElemType &e)
 {
     if(chose == 1)
     {
-        pushOdn(s, e);
+        GetOdnTop(s, e);
     }
     else if(chose == 2)
     {
-        pushRev(s, e);
+        GetRevTop(s, e);
     }
     else
     {
         cout << "[Wrong stack code, do nothing]" << endl;
     }
 }
+
 void pushOdn(twStack &s, ElemType e)
 {
     if(isStackExist(s) && s.odnTop <= s.revTop)
@@ -182,14 +168,55 @@ void pushRev(twStack &s, ElemType e)
     if(isStackExist(s) && s.odnTop <= s.revTop)
     {
         s.elem[s.revTop] = e;
-        s.revTop++;
+        s.revTop--;
     }
     else
     {
         cout << "[Memory overflow]" << endl;
     }
 }
+void push(twStack &s, int chose, ElemType e)
+{
+    if(chose == 1)
+    {
+        pushOdn(s, e);
+    }
+    else if(chose == 2)
+    {
+        pushRev(s, e);
+    }
+    else
+    {
+        cout << "[Wrong stack code, do nothing]" << endl;
+    }
+}
 
+ElemType popOdn(twStack &s)
+{
+    if(!isOdnStackEmpty(s))
+    {
+    	s.odnTop--;
+        return s.elem[s.odnTop];
+    }
+    else
+    {
+        cout << "[The stack is empty, can't pop]" << endl;
+        return DefaultElem;
+    }
+}
+ElemType popRev(twStack &s)
+{
+    if(!isRevStackEmpty(s))
+    {
+    	s.revTop++;
+        return s.elem[s.revTop];
+    }
+    else
+    {
+        cout << "[The stack is empty, can't pop]" << endl;
+        return DefaultElem;
+    }
+}
 ElemType pop(twStack &s, int chose)
 {
     if(chose == 1)
@@ -206,30 +233,7 @@ ElemType pop(twStack &s, int chose)
         return DefaultElem;
     }
 }
-ElemType popOdn(twStack &s)
-{
-    if(!isOdnStackEmpty(s))
-    {
-        return s.elem[s.odnTop - 1];
-    }
-    else
-    {
-        cout << "[The stack is empty, can't pop]" << endl;
-        return DefaultElem;
-    }
-}
-ElemType popRev(twStack &s)
-{
-    if(!isRevStackEmpty(s))
-    {
-        return s.elem[s.revTop + 1];
-    }
-    else
-    {
-        cout << "[The stack is empty, can't pop]" << endl;
-        return DefaultElem;
-    }
-}
+
 
 
 
