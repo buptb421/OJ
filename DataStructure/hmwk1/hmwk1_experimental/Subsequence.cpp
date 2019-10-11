@@ -1,5 +1,6 @@
 #include<iostream>
-#include"MinimumSubsequence.hpp"
+
+#include"BasicArrayOperations.hpp"
 
 using namespace std;
 

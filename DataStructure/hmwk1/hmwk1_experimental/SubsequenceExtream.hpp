@@ -1,230 +1,15 @@
 #include<iostream>
-#include<iomanip>
 #include<cmath>
+#include<vector>
 
-#define NUM_WIDTH 4
-#define LENGTH 100
+#include "BasicArrayOperations.hpp"
+
 
 using namespace std;
 
-typedef struct function{
-    int s;
-    int e;
-    int sum;
-}piece;
-
-typedef struct PieceTree{
-    piece p;
-    struct PieceTree *left;
-    struct PieceTree *right;
-} pt;
-
-piece setPiece(int s, int e, int sum)
-{
-    piece p;
-    p.s = s;
-    p.e = e;
-    p.sum = sum;
-    return p;
-}
-
-bool isPieceRight(piece p)
-{
-    if(p.e >= p.s)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }  
-}
-
-void displayPiece(int a[], int start, int end)
-{
-    int sum = 0;
-    for(int i = start; i <= end; i++)
-    {
-        cout << a[i] << ' ';
-        sum += a[i];
-    }
-    cout << endl << "The sum is " << sum << '.' << endl;
-}
-int getPieceSum(int a[], int start, int end)
-{
-    int sum = 0;
-    for(int i = start; i <= end; i++)
-    {
-        sum += a[i];
-    }
-    return sum; 
-}
-
-void DisplayPieceSumMatrix(int n, int a[])
-{
-    int temp[100][100];
-    bool noneZero = true;
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = i; j < n; j++)
-        {
-            temp[i][j] = getPieceSum(a, i, j);
-            if(temp[i][j] == 0)
-            {
-                noneZero = false;
-            }
-        }
-    }
-
-    for(int i = 0; i < n; i++)
-    {
-        if(i > 0)
-        {
-            for(int j = 0; j < i * (NUM_WIDTH + 1); j++)
-            {
-                cout << ' ';
-            }
-            for(int j = i; j < n; j++)
-            {
-                cout << ' ';
-                if(temp[i - 1][j] < temp[i][j])
-                {
-                    cout << "AA";
-                }
-                else if(temp[i - 1][j] > temp[i][j])
-                {
-                    cout << "VV";
-                }
-                else
-                {
-                    cout << "||";
-                }
-                cout << "  ";
-            }
-            cout << endl;
-        }
-		
-        for(int j = 0; j < i * (NUM_WIDTH + 1); j++)
-        {
-            cout << ' ';
-        }
-        for(int j = i; j < n; j++)
-        {
-            if(j > i)
-            {
-                if(temp[i][j - 1] < temp[i][j])
-                {
-                    cout << '<';
-                }
-                else if(temp[i][j - 1] > temp[i][j])
-                {
-                    cout << '>';
-                }
-                else
-                {
-                    cout << '=';
-                }
-            }
-            cout << setiosflags(ios::left) << setw(NUM_WIDTH)<< temp[i][j];
-        }
-        cout << endl; 
-    }
-    if(noneZero)
-    {
-        cout << "The array has no 0 sum continous subsequence." << endl;
-    }
-}
-
-int getArray(int a[])
-{
-    int n;
-    cout << "Please enter the length of the array." << endl;
-    cin >> n;
-    cout << "Please input Array of " << n << " integers." << endl;
-    for(int i = 0; i < 100 && i < n; i++)
-    {
-        cin >> a[i];
-    }
-    return n;
-}
-
-piece getPiece(int n, int a[], int start, int step)
-{
-    int i = start;
-    piece p = setPiece(0,0,0);
-    if(step > 0)
-    {
-        step = 1;
-    }
-    else if(step < 0)
-    {
-        step = -1;
-    }
-    else
-    {
-        cout << "[Wrong step, it can't be 0]" << endl;
-        return p;
-    }
-
-    while(i < n && i >= 0 && ((a[start] > 0 && a[i] > 0) || (a[start] < 0 && a[i] < 0) || (a[start] == 0 && a[i] == 0 )))
-    {
-        p.sum += a[i];
-        i += step;
-    }
-    i -= step;
-
-    if(i > start)
-    {
-        p.s = start;
-        p.e = i;
-    }
-    else
-    {
-        p.s = i;
-        p.e = start;
-    }
-    return p;
-}
-
-bool isRightOrdered(piece first, piece second, int step) // >
-{
-    if((first.sum > second.sum && step > 0) || (first.sum < second.sum && step < 0))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool isLeftOrdered(piece first, piece second, int step) // <
-{
-    if((first.sum > second.sum && step < 0) || (first.sum < second.sum && step > 0))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool isZero(piece first, piece second) // x_n = - x_(n + 1)
-{
-    if(first.sum == -second.sum)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 bool isCondensablePiece(piece left, piece mid, piece right)
 {
-    if(left.e < mid.s && mid.e < right.s && abs(left.sum) > abs(mid.sum) && abs(right.sum) > abs(mid.sum))
+    if(abs(left.sum) >= abs(mid.sum) && abs(right.sum) >= abs(mid.sum) && (abs(left.sum) != abs(mid.sum) || abs(right.sum) != abs(mid.sum)))
     {
         return true;
     }
@@ -241,44 +26,26 @@ piece condensePiece(piece left, piece mid, piece right)
 
 void findLocalExtream(int n, int a[])
 {
-    piece p[100];
     int nPiece = 0;
-    piece le[100];
-    int nLE = 0;
 
-    int prevPloar = 0;
-    int prevSum = 0;
-    int prevS = 0;
-    int prevE = 0;
+    pt tempPT;
+    tempPT.left = nullptr;
+    tempPT.right = nullptr;
+    tempPT.p = setPiece(0, 0, 0);
+
+    vector<pt> extream(3 * LENGTH, tempPT);
 
     for(int i = 0; i < n; i++)
     {
-        p[nPiece] = getPiece(n, a, i, 1);
-        i = p[nPiece].e;
-        nPiece++;
-    }
-    for(int i = 0; i < nPiece; i++)
-    {
-        if(p[i].sum == 0)
+        tempPT.p = getPiece(n, a, i, 1);
+        extream[nPiece] = tempPT;
+        if(i > 0)
         {
+            extream[nPiece - 1].right = &extream[nPiece];
+        }
 
-        }
-        else
-        {
-            if(prevPloar == 0)
-            {
-                if(p[i].sum > 0)
-                {
-                    prevPloar = 1;
-                }
-                else if (p[i].sum < 0)
-                {
-                    
-                }
-                
-            }
-        }
-        
-        
+        nPiece++;
+        i = tempPT.p.e;
     }
+    displayPieceTree(n, a, &extream[0], 0);
 }
