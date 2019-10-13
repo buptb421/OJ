@@ -96,7 +96,7 @@ int divide(char ori[], const int bl_ori, char div[][60])
 void copyWord_to(char ori[], char cop[], const int buffer_length)
 {
     int i;
-    for(i = 0; i < buffer_length && (ori[i - 1] != '\0' || i == 0); i++)
+    for(i = 0; i < buffer_length; i++)
     {
 	cop[i] = ori[i];
     }
