@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<
 
 #define LENGTH 1000
 
@@ -22,21 +23,40 @@ int getStr(char *w)
 }
 
 
-char *findK(char *str, char k)
+int findK(char *str, char k)
 {
+    int i = 0;
     while(*str != k && str != '\0')
     {
 	str++;
+	i++;
     }
     
     if(*str == k)
     {
-	return str;
+	return i;
     }
     else
     {
-	return NULL;
+	return -1;
     }
 }
 
-void insert(char *insertion, char
+void insertConnectedStr(char *str, int a, int b, int k)
+{
+    
+}
+
+/* In a group of such permutation:
+ * every element, with position 'pos' is rearranged to position addressMap(size, i, pos)
+ * addressMap = { 
+ */
+int addressMap(int size, int i, int pos)
+{
+    
+}
+
+void permute(char *head, int size, int i)
+{
+    
+}
