@@ -1,16 +1,6 @@
 #include<iostream>
 #include<iomanip>
 
-#define LOWEST_PRECEDENCE 0
-#define HIGHEST_PRECEDENCE 1
-
-#define NUMBERandVARIABLE 2
-
-#define SCOPE_START 3
-#define SCOPE_END 4
-
-#define DELIMITER 5
-
 using namespace std;
 
 int precedence(char op);
@@ -19,7 +9,6 @@ float evaluator(float prevRes, char prevOp);
 
 int main()
 {
-    // queue<char> output;
     float result;
 
     result = evaluator(0, '+');
@@ -27,29 +16,31 @@ int main()
     return 0;
 }
 
-int precedence(char op)
+int precedence(char c)
 {
-    switch (op)
-    {
-    case '+':
-        return LOWEST_PRECEDENCE;
-    case '-':
-        return LOWEST_PRECEDENCE;
-    case '*':
-        return HIGHEST_PRECEDENCE;
-    case '/':
-        return HIGHEST_PRECEDENCE;
-    case '(':
-        return SCOPE_START;
-    case ')':
-        return SCOPE_END;    
-    case '\n':
-        return DELIMITER;
-    case '\0':
-        return DELIMITER;
-    default:
-        return NUMBERandVARIABLE;
-    }
+	switch(c)
+	{
+		case '(':
+			return 0;
+		case ')':
+			return 1;
+		case '\0':
+			return 2;
+		case '\n':
+			return 2;
+
+		case '+' :
+			return 3;
+		case '-' :
+			return 3;
+		case '*' :
+			return 4;
+		case '/' :
+			return 4;
+		
+		default :
+			return 5; 
+	}
 }
 
 float binCalc(float result, float prevRes, char op, bool init) // result = binCalc(result, prevRes, prevOp)
