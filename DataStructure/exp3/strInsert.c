@@ -25,7 +25,7 @@ int findK(char *str, char k)
  * every element, with position 'pos' is rearranged to position addressMap(size, i, pos)
  * addressMap(size, i, pos) = 
  * { 
- *     pos + (size - i), o ~ (i -1)    ;
+ *     pos + (size - i), 0 ~ (i -1)    ;
  *     pos - i         , i ~ (size - 1);
  * {
  */

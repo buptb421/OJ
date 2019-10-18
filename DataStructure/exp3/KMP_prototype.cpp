@@ -1,3 +1,6 @@
+/* This is a prototype which would not output correct result, please use KMP_book.cpp or KMP_universial.cpp as reference.
+ */
+
 #include<iostream>
 #include<string.h>
 
