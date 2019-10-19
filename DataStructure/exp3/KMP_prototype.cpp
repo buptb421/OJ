@@ -20,35 +20,47 @@ void displayArray(int n, int a[], char sep)
 
 void displayMatchPos(char str[], int strL, char pattern[], int patL, int i, int j)
 {
-	cout << '{' << endl;
-	for(int k = 0; k < strL; k++)
-	{
+    cout << '{' << i << endl;
+    for(int k = 0; k < strL; k++)
+    {
         if(k == i)
         {
             cout << '|' << str[k] << '|';
         }
         else
         {
-        	cout << str[k];
-		}
+	    cout << str[k];
 	}
-	cout << endl;
+    }
+    cout << endl;
+   
+    if(j == -1)
+    {
+	for(int k = 0; k < i; k++)
+	{
+	    cout << ' ';
+	}
+        cout << "| |";
+    }
+    else
+    {
 	for(int k = j; k < i; k++)
 	{
-		cout << ' ';
+	    cout << ' ';
 	}
-	for(int k = 0; k < patL; k++)
+    }
+    for(int k = 0; k < patL; k++)
+    {
+	if(k == j)
 	{
-        if(k == j)
-        {
-            cout << '|' << pattern[k] << '|';
-        }
-        else
-        {
-        	cout << pattern[k];
-		}
+	    cout << '|' << pattern[k] << '|';
 	}
-	cout << endl << '}' << endl;
+	else
+	{
+	    cout << pattern[k];
+	}
+    }
+    cout << endl << '}' << j << endl << endl;
 } 
 
 // intuitively, we notice getNext is doing a counted KMP to pattern itself.
