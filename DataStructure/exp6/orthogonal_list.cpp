@@ -168,7 +168,8 @@ OLNode *constructOLNode_list(int m, int tup[][2])
     }
     return p;
 }
-
+/*
+// insert method 1
 void insertOLNode_index(OLHead head[], OLNode *node, int index)
 {
     head += node->pos[index];
@@ -179,11 +180,11 @@ void insertOLNode_index(OLHead head[], OLNode *node, int index)
     while(!(*pnext == nullptr || nowPos >= node->pos[1 - index]))
     {
         nowPos = (*pnext)->pos[1 - index];
-        if((*pnext)->pos[1 - index] < node->pos[1 - index])
+        if(nowPos < node->pos[1 - index])
         {
             pnext = &(*pnext)->next[index];
         }
-        else if((*pnext)->pos[1 - index] > node->pos[1 - index])
+        else if(nowPos > node->pos[1 - index])
         {
             node->next[index] = *pnext;
         }
@@ -192,6 +193,44 @@ void insertOLNode_index(OLHead head[], OLNode *node, int index)
     {
         *pnext = node;
     }
+}
+*/
+// insert method 2
+void insertOLNode_index(OLHead head[], OLNode *node, int index)
+{
+    head += node->pos[index];
+    int nowPos = -1;
+    head->num[index]++;
+    if(head->ptr[index] == nullptr)
+    {
+        head->ptr[index] = node;
+    }
+    else
+    {
+        OLNode *prev, *sucs = head->ptr[index];
+        if(sucs->pos[1 - index] > node->pos[1 - index])
+        {
+            node->next[index] = sucs;
+            head->ptr[index] = node;
+        }
+        else
+        {
+            do
+            {
+                prev = sucs;
+                sucs = prev->next[index];
+            }while(!(sucs == nullptr || sucs->pos[1 - index] > node->pos[1 - index]));
+            if(sucs == nullptr)
+            {
+                prev->next[index] = node;
+            }
+            else if(sucs->pos[1 - index] > node->pos[1 - index])
+            {
+                node->next[index] = sucs;
+                prev->next[index] = node;
+            }
+        }
+    } 
 }
 
 void insertOLNode(OLHead head[], OLNode *node)
