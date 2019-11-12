@@ -108,7 +108,7 @@ void displayGraph(graph g)
 }
 */
 // The operations are actually linklist operations.
-// We insert new node to the head of the link list.
+// We insert new node to the end of the link list, since the tuples are in order, we will not sort.
 adjvertex* constructHead_list(int vertexNum)
 {
     adjvertex *p = new adjvertex[vertexNum];
@@ -214,6 +214,8 @@ bool topologySort(char vertexName[VERTEX_NUM], graph g)
     while(!zeroVertex.empty())
     {
         g.edgeNum -= divVertex(g, zeroVertex.front(), zeroVertex);
+        // this function divide a zero indegree vertex out of the graph(break the connectivity)
+        
         //displayGraph(g);
         //cout << zeroVertex.size() << "front: " << zeroVertex.front() << ", back: " << zeroVertex.back() << endl;
         cout << vertexName[zeroVertex.front()] << ',';
