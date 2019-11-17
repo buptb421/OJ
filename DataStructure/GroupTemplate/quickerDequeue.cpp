@@ -81,7 +81,7 @@ bool exist(dequeue d)
 }
 bool empty(dequeue d)
 {
-    return d.head[POS_FRONT] != d.MemSize && d.head[POS_BACK] != d.MemSize;
+    return d.head[POS_FRONT] == d.MemSize || d.head[POS_BACK] == d.MemSize;
 }
 bool full(dequeue d)
 {
@@ -126,21 +126,17 @@ void pop(dequeue &d, int pos_ind)
     if(exist(d) && !empty(d))
     {
         d.head[pos_ind] = step(d, stp_ind, d.head[pos_ind]);
-        if(d.head[pos_ind] == d.head[1 - pos_ind])
+        if(full(d))
             clearDequeue(d);
     }
     else
         cout << "Can't pop." << endl;
 }
 
-// Now we have our operation interface. All the same to STL.
+// Operation interface. All the same to STL except front/back return pointers instead of reference.
 elemType* front(dequeue &d){return phead(d, POS_FRONT);}
 elemType* back(dequeue &d){return phead(d, POS_BACK);}
 void push_front(dequeue &d, elemType data){push(d, POS_FRONT, data);}
 void push_back(dequeue &d, elemType data){push(d, POS_BACK, data);}
 void pop_front(dequeue &d){pop(d, POS_FRONT);}
 void pop_back(dequeue &d){pop(d, POS_BACK);}
-
-
-
-

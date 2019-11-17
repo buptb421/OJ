@@ -81,7 +81,7 @@ bool empty(dequeue d)
     /* Note that it's empty when all the heads are at 'empty position' d.MemSize.                 /
      * this will simplify push functions(push_front, push_back).                                  /
      * BTW, a not existing dequeue will be empty and full, so that you won't push or pop it.     */
-    return d.front != d.MemSize && d.back != d.MemSize;
+    return d.front == d.MemSize || d.back == d.MemSize;
 }
 
 bool full(dequeue d)
@@ -152,7 +152,7 @@ void pop_front(dequeue &d)
     if(exist(d) && !empty(d))
     {
         d.front = prev(d, d.front);
-        if(d.front == d.back)
+        if(full(d))
             clearDequeue(d);
     }
     else
