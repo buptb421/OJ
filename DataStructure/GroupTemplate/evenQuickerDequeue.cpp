@@ -347,7 +347,7 @@ void displayAll(dequeue d)
     for(int i = 0; i < 20; i++) cout << '='; cout << endl;
     mute = mute_init;
 }
-
+/*
 elemType *phead(dequeue &d, int pos_ind)
 {
     elemType *p;
@@ -372,7 +372,7 @@ void push_front(dequeue &d, elemType data) { push(d, POS_FRONT, data); }
 void push_back(dequeue &d, elemType data) { push(d, POS_BACK, data); }
 void pop_front(dequeue &d, elemType &data) { pop(d, POS_FRONT, data); }
 void pop_back(dequeue &d, elemType &data) { pop(d, POS_BACK, data); }
-
+*/
 int getNum(char *str)
 {
     int num = 0;
