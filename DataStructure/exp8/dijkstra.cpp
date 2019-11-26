@@ -2,8 +2,8 @@
 #include <stack>
 using namespace std;
 
-constexpr int VERTEX_NUM = 7;
-constexpr int EDGE_NUM = 12;
+#define VERTEX_NUM 7
+#define EDGE_NUM 12
 
 int connect_edge[EDGE_NUM][2] = {
     {1, 2, },
@@ -53,7 +53,7 @@ void getGraph(graph &g)
         g.m[connect_edge[i][0] - 1][connect_edge[i][1] - 1] = weight_edge[i];
     }
 }
-
+/*
 void displayGraph(graph g)
 {
     for(int i = 0; i < g.vn; i++)
@@ -112,7 +112,7 @@ void displyHeap(int heap[], int heapSize, vertex vtx[])
 
     cout << "----------" << endl;
 }
-
+*/
 // Heap operations
 int c2p(int c) // children to parent
 {
@@ -139,66 +139,36 @@ void heap_exchange(int h[], vertex v[], int m, int n)
     v[h[n]].heapPos = n;
 }
 
-bool heap_shiftup(int h[], vertex v[], int &n)
-{
-    int p = c2p(n);
-    if(n > 0)
-    {
-        heap_exchange(h, v, n, p);
-        n = p;
-        return true;
-    }
-    else return false;
-}
-
-bool heap_shiftdown(int h[], int heapSize, vertex v[], int &n)
-{
-    int l = p2l(n);
-    if(l < heapSize && v[h[l]].dist < v[h[l + 1]].dist)
-    {
-        heap_exchange(h, v, n, l);
-        n = l;
-    }
-    else if(l + 1 < heapSize)
-    {
-        heap_exchange(h, v, n, l + 1);
-        n = l + 1;
-    }
-    else return false;
-    return true;
-}
-
 void heap_refresh(int h[], int heapSize, vertex v[], int n)
 {
     int balance = 0, lc = -1, next;
     bool ensuite = true;
     do{
-        if(balance > 0)
-        {
-            ensuite = heap_shiftup(h, v, n);
-        }
-        else if(balance < 0)
-        {
-            ensuite = heap_shiftdown(h, heapSize, v, n);
-        }
-
         if(n > 0 && v[h[n]].dist < v[h[c2p(n)]].dist)
         {
-            balance = 1;
+            int p = c2p(n);
+            heap_exchange(h, v, n, p);
+            n = p;
         }
         else 
         {
             lc = p2l(n);
-            if((lc < heapSize && v[h[lc]].dist < v[h[n]].dist) || ((lc + 1) < heapSize && v[h[lc + 1]].dist < v[h[n]].dist))
+            if((lc + 1) < heapSize && v[h[lc + 1]].dist < v[h[lc]].dist && v[h[lc + 1]].dist < v[h[n]].dist)
             {
-                balance = -1;
+                heap_exchange(h, v, n, lc + 1);
+                n = lc + 1;
+            }
+            else if((lc < heapSize && v[h[n]].dist > v[h[lc]].dist) || ((lc + 1) < heapSize && v[h[lc + 1]].dist > v[h[lc]].dist && v[h[lc]].dist < v[h[n]].dist))
+            {
+                heap_exchange(h, v, n, lc);
+                n = lc;
             }
             else
             {
-                balance = 0;
+                ensuite = false;
             }
         }
-    }while(balance != 0 && ensuite);
+    }while(ensuite);
 }
 
 int heap_pop_top(int h[], int &heapSize, vertex v[])
@@ -229,19 +199,24 @@ void dijkstra(graph g, vertex vtx[], int s)
         vtx[i].prev = -1;
         vtx[i].heapPos = -1;
     }// init vertex
-    
+    /*
+    cout << "Insert[";
+    displayVertex(vtx, 0);
+    cout << ']' << endl;
+    */
     vtx[s].dist = 0;
     heap_insert(minHeap, heapSize, vtx, s);
-
+	//displyHeap(minHeap, heapSize, vtx);
+	
     while(heapSize > 0)
     {
-        
+        /*
     	cout << "Pop[";
         displayVertex(vtx, minHeap[0]);
         cout << ']' << endl;
-        
+        */
         nowCertain = heap_pop_top(minHeap, heapSize, vtx);
-        displyHeap(minHeap, heapSize, vtx);
+        //displyHeap(minHeap, heapSize, vtx);
 
         for(int j = 0; j < VERTEX_NUM; j++)
         {
@@ -251,25 +226,25 @@ void dijkstra(graph g, vertex vtx[], int s)
                 {
                     vtx[j].dist = vtx[nowCertain].dist + g.m[nowCertain][j];
                     vtx[j].prev = nowCertain;
-                    
+                    /*
                     cout << "Insert[";
                     displayVertex(vtx, j);
                     cout << ']' << endl;
-                    
+                    */
                     heap_insert(minHeap, heapSize, vtx, j);
-                    displyHeap(minHeap, heapSize, vtx);
+                    //displyHeap(minHeap, heapSize, vtx);
                 }
                 else if(vtx[j].heapPos != VERTEX_NUM && vtx[nowCertain].dist + g.m[nowCertain][j] < vtx[j].dist)
                 {
                     vtx[j].dist = vtx[nowCertain].dist + g.m[nowCertain][j];
                     vtx[j].prev = nowCertain;
-                    
+                    /*
                     cout << "refresh[";
                     displayVertex(vtx, j);
                     cout << ']' << endl;
-                    
+                    */
                     heap_refresh(minHeap, heapSize, vtx, vtx[j].heapPos);
-                    displyHeap(minHeap, heapSize, vtx);
+                    //displyHeap(minHeap, heapSize, vtx);
                 }
             }
         }
@@ -286,10 +261,8 @@ int main()
     char comma;
     int f, t;
     cin >> f >> comma >> t;
-    cout << f << ' ' << t << endl;
     g.en--;
     g.m[f - 1][t - 1] = 0;
-
     //displayGraph(g);
 
     vertex v[VERTEX_NUM];
@@ -305,7 +278,11 @@ int main()
 
     while(!traceID.empty())
     {
-        cout << traceID.top() << ',';
+        cout << traceID.top();
+        if(traceID.top() != 6)
+        {
+            cout << ',';
+        }
         traceID.pop();
     }
 
