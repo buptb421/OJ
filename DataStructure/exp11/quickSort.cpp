@@ -124,12 +124,17 @@ void myQsort(int a[], int n, int k)
 
 int main()
 {
+    /*
     int a[] = {49, 38, 65, 97, 76, 13, 27, 50, 2, 8};
 
     int k;
     cin >> k;
-
+    
     myQsort(a, NUM, k);
+    */
+    int a[] = {20,38,24,23,26,32,21,29,38,28};
+    
+    quickSort(a, 0, 9);
 
     return 0;
 }
