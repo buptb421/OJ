@@ -1,0 +1,30 @@
+* Data structure
+** linear list
+*** list and its expansion
+*** deque family
+**** stack
+**** queue
+*** other useful linear structures
+**** heap
+**** set(specifically, disjoint-set structure)
+** linked list
+deal with the mappings, similar tree.
+** tree
+*** binary tree
+similar to linklist, but bitwise.
+** graph
+*** matrix representation of graph
+*** adjacency representation of graph
+* Algorithms
+** mappings
+*** union find
+*** hashing
+** sort
+
+** search
+** matching
+** graph algorithms
+
+* Those ignored useful data structures and algorithms
+** bloom filter
+** skip list
