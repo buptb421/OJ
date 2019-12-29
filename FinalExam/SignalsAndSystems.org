@@ -59,9 +59,9 @@ Given signal $x(t)$, unit response $h(t)$. Convolution is:
 - 
 * fourier transformation
 
-The idea of fourier transformation is simple, that all functions like $sin(kx), cos(kx), e^{jkx}$ are orthogonal in lebesgue space(we mean the space whose elements are equality class of functions having 0 value integraling their diffrence), which, indicates the are linear irrelevant. And since there are infinit number of those linear irrelevant function classes as there are infinit k, guess it is a set of orthognnal base for all function classes in the labesgue space.
+The idea of fourier transformation is simple, that all functions like $sin(kx), cos(kx), e^{jkx}$ are orthogonal in lebesgue space(we mean the space whose elements are equality class of functions having 0 value integraling their diffrence), which, indicates the are linear irrelevant. And since there are infinit number of those linear irrelevant function classes as there are infinit k, guess it is a set of orthogonal basis for all function classes in the labesgue space.
 
-If there are 3 orthognal and nonzero vector in 3D space, its a base, when there are infinit orthogonal vectors for a infinit dimensional space, it is possible to be a base, though the real proof is too long and useless in this course. And since those functions have similar integral and in most occasion, have the same derivative, we can use it in physical world without any problem.)
+If there are 3 orthognal and nonzero vector in 3D space, its a basis, when there are infinit orthogonal vectors for a infinit dimensional space, it is possible to be a basis, though the real proof is too long and useless in this course. And since those functions have similar integral and in most occasion, have the same derivative, we can use it in physical world without any problem.)
 ** math about FT
 *** continous condition
 **** fourier series with sinusoidial representation
@@ -123,7 +123,34 @@ for even functions, all $b_n$ are 0, while for odd functions, all $a_n$ are 0.
 \end{align}
 #+END_EXPORT
 ***** 2 ways to get to exp representation of FT
+****** pull $e^{jx} = cos(x) + j sin(x)$ into sinusoidial representation of FT 
 
+From previous work, we have:
+#+BEGIN_EXPORT latex
+\begin{align}
+  f(x) & = \frac{1}{2} a_0 +
+  \sum_{n = 1}^{+\infty} a_n cos(n \omega x)
+  +
+  \sum_{n = 1}^{+\infty}b_n  sin(n \omega x), \notag \\
+  a_0 & = \frac{\omega}{\pi} \int_{<T>}f(x)dx \notag \\
+  a_n & = \frac{\omega}{\pi} \int_{<T>}f(x) cos(n \omega x) dx \notag \\
+  b_n & = \frac{\omega}{\pi} \int_{<T>}f(x) sin(n \omega x) dx. \notag \\
+  sin(x) & = \frac{1}{2 j} (e^{j x} - e^{-j x}) \notag \\
+  cos(x) & = \frac{1}{2} (e^{j x} + e^{-j x}) \notag \\
+  \text{with simple substitution:} \notag \\
+  f(x) & = \frac{1}{2} a_0 +
+  \sum_{n = 1}^{+\infty} a_n \frac{1}{2} (e^{j n \omega x} + e^{-j n \omega x})
+  +
+  \sum_{n = 1}^{+\infty}b_n \frac{1}{2 j} (e^{j n \omega x} - e^{-j n \omega x}), \notag \\
+  & = \frac{1}{2} \bigl( a_0 + \sum_{n = 1}^{+\infty} (a_n - j b_n) e^{j n \omega x} + (a_n + j b_n) e^{- j n \omega x} \bigr) \notag \\
+  & = \frac{1}{2} \bigl(
+  \sum_{n = -\infty}^{-1} (a_{-n} + j_{-n}) e^{j n \omega x}
+  + a_0 e^0
+  + \sum_{n = 1}^{+\infty} (a_{n} - j_{n}) e^{j n \omega x}
+  \bigr) \notag \\
+  & = \sum_{-\infty}^{+\infty} z_n e^{j n \omega x}\text{z_n is calculated from a_n and b_n.}
+\end{align}
+#+END_EXPORT
 ** FT of continous systems
 *** start with periodical functions(signals)
 *** expand to aperiodical functions(signals)
