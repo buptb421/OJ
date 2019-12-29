@@ -1,0 +1,137 @@
+#+STARTUP: indent
+* LTI systems
+
+In a brief word, a LTI system(Linear Time Invariant system) should have property of:
+- linear
+- time invariant
+so that there will be a important characteristic for LTI systems, which is their resopnse to signals can be intepreted by convolute its response to unit impulse with the signal.
+** math about convolution
+
+#+BEGIN_EXPORT latex
+Given signal $x(t)$, unit response $h(t)$. Convolution is: 
+\begin{equation}
+  x * h(t) = \int_{\mathbf{R}}x(\tau)h(t-\tau)d\tau.
+\end{equation}
+#+END_EXPORT
+** properties of convolution
+*** basic properties
+
+- $x(t)*h(t) = h(t)*x(t)$
+*** useful facts
+
+- $x(t - T) = x * \delta(t_d - T)(t)$ 
+
+  Move $x(t)$ right $T$, the new function is $x(t - T)$, which is actually $x * \delta(t_d - T)(t) \text{ or } x * \delta(T - t_d)(t)$ since:
+  #+BEGIN_EXPORT latex
+  \begin{align}
+    x*\delta(t_d - T)(t) = \int_{\mathbf{R}}x(\tau)\delta(t-\tau-T)d\tau, \notag \\
+    \delta(t-\tau-T) = \left\{
+      \begin{array}{rl}
+        u'(0) & \text{if } \tau = t - T, \\
+        0 & \text{otherwise}.
+      \end{array}
+    \right. \notag \\
+    \text{So that, } x*\delta(t_d - T)(t) = \int \frac{du_0}{dt} x(t - T) dt = x(t - T). \notag
+  \end{align}
+  #+END_EXPORT
+  However we usually write it as $x(t) * \delta(t - T)$.
+- $cx(t) = x(t) * c\delta(t)$, no need to talk.
+- $u_k(t)*x(t) = \frac{d^kx(t)}{dt^k}$
+
+  #+BEGIN_EXPORT latex
+  \begin{align}
+    u_1(t) & = \lim_{\varDelta \rightarrow 0}
+             \frac{
+             \delta_{\varDelta}(t) - \delta_{\varDelta}(t - \varDelta)}
+             {
+             \varDelta}. \\ 
+    u_k(t) & = \underbrace{u_1(t) * ... * u_1(t)}_{\text{k } u_1(t) \text{ convolute}}
+  \end{align}
+  #+END_EXPORT
+- $u_{-k}(t)*x(t) = \underbrace{\int ... \int}_{\text{k integrals}} x(\tau)d\tau^k$
+  
+  $u_{-1}(t)$ is actually the usual $u(t)$.
+  #+BEGIN_EXPORT latex
+  \begin{equation}
+    u_{-k}(t) = \underbrace{u(t) * ... * u(t)}_{\text{k } u(t) \text{ convolute}}
+  \end{equation}
+  #+END_EXPORT
+- 
+* fourier transformation
+
+The idea of fourier transformation is simple, that all functions like $sin(kx), cos(kx), e^{jkx}$ are orthogonal in lebesgue space(we mean the space whose elements are equality class of functions having 0 value integraling their diffrence), which, indicates the are linear irrelevant. And since there are infinit number of those linear irrelevant function classes as there are infinit k, guess it is a set of orthognnal base for all function classes in the labesgue space.
+
+If there are 3 orthognal and nonzero vector in 3D space, its a base, when there are infinit orthogonal vectors for a infinit dimensional space, it is possible to be a base, though the real proof is too long and useless in this course. And since those functions have similar integral and in most occasion, have the same derivative, we can use it in physical world without any problem.)
+** math about FT
+*** continous condition
+**** fourier series with sinusoidial representation
+***** Fourier series for T period function on $\mathbf{R}$ are:
+
+#+BEGIN_EXPORT latex
+\begin{align}
+  f(x) & =
+         \frac{1}{2}a_0
+         +
+         \sum_{n = 1}^{+\infty}a_n  cos(\frac{2 n \pi x}{T})
+         +
+         \sum_{n = 1}^{+\infty}b_n  sin(\frac{2 n \pi x}{T}), \notag \\
+       & =
+         \frac{1}{2}a_0
+         +
+         \sum_{n = 1}^{+\infty}a_n  cos(n \omega x)
+         +
+         \sum_{n = 1}^{+\infty}b_n  sin(n \omega x), \notag \\
+  \text{where, } & \notag \\
+  a_0 & = \frac{2}{T} \int_{<T>}f(x)dx \notag \\
+  a_n & = \frac{2}{T} \int_{<T>}f(x) cos(\frac{2 n \pi x}{T}) dx \notag \\
+  b_n & = \frac{2}{T} \int_{<T>}f(x) sin(\frac{2 n \pi x}{T}) dx. \notag \\
+  \text{or } & \notag \\
+  a_0 & = \frac{\omega}{\pi} \int_{<T>}f(x)dx \notag \\
+  a_n & = \frac{\omega}{\pi} \int_{<T>}f(x) cos(n \omega x) dx \notag \\
+  b_n & = \frac{\omega}{\pi} \int_{<T>}f(x) sin(n \omega x) dx. \notag
+\end{align}
+#+END_EXPORT
+***** special case for odd and even functions:
+  
+for even functions, all $b_n$ are 0, while for odd functions, all $a_n$ are 0.
+**** fourier series with exponential representation
+***** some math issues
+****** $e^{jx} = cos(x) + j sin(x)$
+
+#+BEGIN_EXPORT latex
+\begin{align}
+  e^{j x} & = exp(j x) \notag \\
+          & = \sum_{n = 0}^{+\infty} \frac{(j x)^n}{n!} \notag \\
+          & = (\frac{(j x)^0}{0!} + \frac{(j x)^2}{2!} ...) + (\frac{(j x)^1}{1!} + \frac{(j x)^3}{3!} ...) \notag \\
+          & =
+            (\sum_{n_1 = 0}^{+\infty} (-1)^{n_1}\frac{x^{2 n_1}}{(2 n_1)!})
+            +
+            j(\sum_{n_2 = 0}^{+\infty} (-1)^{n_2}\frac{x^{2 n_2 + 1}}{(2n_2 + 1)!}) \notag \\
+          & = cos(x) + j sin(x)
+\end{align}
+#+END_EXPORT
+****** on the other hand, from sinusoidial to exponential
+
+#+BEGIN_EXPORT latex
+\begin{align}
+  sin(x) & = \frac{1}{2 j} \bigl( (cos(x) + j sin(x)) - (cos(x) - j sin(x)) \bigr) \notag \\
+         & = \frac{1}{2 j} \bigl( (cos(x) + j sin(x)) - (cos(-x) + j sin(-x)) \bigr) \notag \\
+         & = \frac{1}{2 j} (e^{j x} - e^{-j x}) \\
+  cos(x) & = \frac{1}{2} \bigl( (cos(x) + j sin(x)) + (cos(x) - j sin(x)) \bigr) \notag \\
+         & = \frac{1}{2} \bigl( (cos(x) + j sin(x)) + (cos(-x) + j sin(-x)) \bigr) \notag \\
+         & = \frac{1}{2} (e^{j x} + e^{-j x})
+\end{align}
+#+END_EXPORT
+***** 2 ways to get to exp representation of FT
+
+** FT of continous systems
+*** start with periodical functions(signals)
+*** expand to aperiodical functions(signals)
+** FT of discrete systems
+*** start with periodical functions(signals)
+*** expand to aperiodical functions(signals)
+** properties of FT
+* signal procesing across time domain and frequency domain(time and frequency characterization)
+** FT table
+* sampling
+** 
